@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Management Dashboard - Starland Water Company</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <h3>Starland Water Co.</h3>
+                <p>Management Dashboard</p>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+                    <li><a href="sales.html" class="nav-link">Sales</a></li>
+                    <li><a href="expenses.html" class="nav-link">Expenses</a></li>
+                    <li><a href="diesel.html" class="nav-link">Diesel</a></li>
+                    <li><a href="repairs.html" class="nav-link">Repairs</a></li>
+                    <li><a href="damages.html" class="nav-link">Damages</a></li>
+                    <li><a href="reports.html" class="nav-link">Reports</a></li>
+                    <li><a href="#" class="nav-link" onclick="showUserManagement()">User Management</a></li>
+                    <li><a href="#" class="nav-link" onclick="showAuditLogs()">Audit Logs</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1>Management Dashboard</h1>
+                <div class="header-controls">
+                    <select class="date-range-selector">
+                        <option value="today">Today</option>
+                        <option value="week" selected>This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="quarter">This Quarter</option>
+                        <option value="year">This Year</option>
+                    </select>
+                    <div class="user-profile">Management</div>
+                </div>
+            </header>
+            
+            <div class="dashboard-grid">
+                <!-- KPI Cards -->
+                <div class="kpi-card">
+                    <h3>Total Sales (Today)</h3>
+                    <div class="kpi-value">KSH 45,670</div>
+                    <div class="kpi-trend positive">↑ 12% from yesterday</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <h3>Total Sales (Month)</h3>
+                    <div class="kpi-value">KSH 1,245,890</div>
+                    <div class="kpi-trend positive">↑ 8% from last month</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <h3>Total Expenses</h3>
+                    <div class="kpi-value">KSH 789,450</div>
+                    <div class="kpi-trend negative">↑ 5% from last month</div>
+                </div>
+                
+                <div class="kpi-card">
+                    <h3>Net Profit</h3>
+                    <div class="kpi-value">KSH 456,440</div>
+                    <div class="kpi-trend positive">↑ 15% from last month</div>
+                </div>
+                
+                <!-- Sales Trend Chart -->
+                <div class="chart-card">
+                    <h3>Sales Trend (Last 30 Days)</h3>
+                    <div class="chart-placeholder">
+                        <p>Sales trend visualization would appear here</p>
+                    </div>
+                </div>
+                
+                <!-- Expense Breakdown -->
+                <div class="chart-card">
+                    <h3>Expense Breakdown</h3>
+                    <div class="chart-placeholder">
+                        <p>Expense breakdown visualization would appear here</p>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="data-table-card">
+                    <h3>Recent Transactions</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Entered By</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2023-06-15</td>
+                                <td>Sale</td>
+                                <td>Water drums to XYZ Ltd</td>
+                                <td>KSH 15,000</td>
+                                <td>Admin User</td>
+                                <td><span class="status success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2023-06-15</td>
+                                <td>Expense</td>
+                                <td>Diesel purchase</td>
+                                <td>KSH 8,500</td>
+                                <td>Manager User</td>
+                                <td><span class="status success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2023-06-14</td>
+                                <td>Sale</td>
+                                <td>Water bottles to ABC Store</td>
+                                <td>KSH 12,000</td>
+                                <td>Entry User</td>
+                                <td><span class="status success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2023-06-14</td>
+                                <td>Repair</td>
+                                <td>Truck maintenance</td>
+                                <td>KSH 25,000</td>
+                                <td>Manager User</td>
+                                <td><span class="status success">Completed</span></td>
+                            </tr>
+                            <tr>
+                                <td>2023-06-13</td>
+                                <td>Sale</td>
+                                <td>Water jerry cans bulk</td>
+                                <td>KSH 18,500</td>
+                                <td>Admin User</td>
+                                <td><span class="status success">Completed</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- User Management Modal -->
+    <div id="userManagementModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>User Management</h2>
+                <span class="close" onclick="closeUserManagement()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <button onclick="showAddUserForm()" class="btn-primary">Add New User</button>
+                <div id="userManagementContent">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersList">
+                            <!-- Users will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="addUserForm" style="display:none;">
+                    <h3>Add New User</h3>
+                    <form id="addUserFormElement">
+                        <input type="email" id="newUserEmail" placeholder="User Email" required><br><br>
+                        <select id="newUserRole" required>
+                            <option value="">Select Role</option>
+                            <option value="management">Management</option>
+                            <option value="entry">Entry</option>
+                        </select><br><br>
+                        <input type="password" id="newUserPassword" placeholder="Password" required><br><br>
+                        <button type="submit" class="btn-primary">Create User</button>
+                        <button type="button" onclick="hideAddUserForm()" class="btn-secondary">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Audit Logs Modal -->
+    <div id="auditLogsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Audit Logs</h2>
+                <span class="close" onclick="closeAuditLogs()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Record Type</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="auditLogsList">
+                        <!-- Audit logs will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../js/supabase.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/dashboard.js"></script>
+    <script src="../js/troubleshooting.js"></script>
+    <script>
+        // User Management Functions
+        function showUserManagement() {
+            document.getElementById('userManagementModal').style.display = 'block';
+            loadUsers();
+        }
+        
+        function closeUserManagement() {
+            document.getElementById('userManagementModal').style.display = 'none';
+        }
+        
+        function showAuditLogs() {
+            document.getElementById('auditLogsModal').style.display = 'block';
+            loadAuditLogs();
+        }
+        
+        function closeAuditLogs() {
+            document.getElementById('auditLogsModal').style.display = 'none';
+        }
+        
+        function showAddUserForm() {
+            document.getElementById('userManagementContent').style.display = 'none';
+            document.getElementById('addUserForm').style.display = 'block';
+        }
+        
+        function hideAddUserForm() {
+            document.getElementById('userManagementContent').style.display = 'block';
+            document.getElementById('addUserForm').style.display = 'none';
+        }
+        
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const userModal = document.getElementById('userManagementModal');
+            const auditModal = document.getElementById('auditLogsModal');
+            
+            if (event.target === userModal) {
+                userModal.style.display = 'none';
+            }
+            if (event.target === auditModal) {
+                auditModal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

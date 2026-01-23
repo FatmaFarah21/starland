@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Test Page - Starland Water Company</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <h3>Starland Water Co.</h3>
+                <p>System Test</p>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html" class="nav-link">Login</a></li>
+                    <li><a href="admin/dashboard.html" class="nav-link">Admin Dashboard</a></li>
+                    <li><a href="management/dashboard.html" class="nav-link">Management</a></li>
+                    <li><a href="entry/sales.html" class="nav-link">Data Entry</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1>System Test Page</h1>
+                <div class="header-controls">
+                    <div class="user-profile">System Test</div>
+                </div>
+            </header>
+            
+            <div class="dashboard-grid">
+                <div class="kpi-card">
+                    <h3>System Status</h3>
+                    <div class="kpi-value">Ready</div>
+                    <div class="kpi-trend">All Systems Connected</div>
+                </div>
+                
+                <div class="data-table-card">
+                    <h3>Test Instructions</h3>
+                    <div style="padding: 20px;">
+                        <h4>Admin Dashboard Data Test:</h4>
+                        <ol>
+                            <li>Navigate to <a href="admin/dashboard.html">Admin Dashboard</a></li>
+                            <li>You should see "Recent Transactions" table populated with data</li>
+                            <li>Each transaction should show: Date & Time, User, Transaction Type, Reference, Amount, Status</li>
+                            <li>All data comes from data entry modules</li>
+                        </ol>
+                        
+                        <h4>Data Entry Test:</h4>
+                        <ol>
+                            <li>Go to any <a href="entry/sales.html">Data Entry</a> module</li>
+                            <li>Enter some test data (e.g., sales, expenses, etc.)</li>
+                            <li>Return to Admin Dashboard - the new data should appear in "Recent Transactions"</li>
+                        </ol>
+                        
+                        <h4>Troubleshooting:</h4>
+                        <ul>
+                            <li>If no data appears, open browser console (F12) and run: <code>runDiagnostics()</code></li>
+                            <li>Check that your Supabase is properly configured in js/supabase.js</li>
+                            <li>Ensure database tables exist (run db_init.sql in Supabase SQL Editor)</li>
+                        </ul>
+                        
+                        <h4>Quick Test Button:</h4>
+                        <button id="quickTestBtn" class="btn btn-primary" style="margin: 10px 0;">Run Quick System Test</button>
+                        <div id="testResults" style="margin-top: 15px; padding: 10px; background-color: #f0f9ff; border-radius: 5px;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="js/supabase.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/troubleshooting.js"></script>
+    
+    <script>
+        // Quick test functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const testBtn = document.getElementById('quickTestBtn');
+            if (testBtn) {
+                testBtn.addEventListener('click', function() {
+                    runQuickTest();
+                });
+            }
+        });
+        
+        async function runQuickTest() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = '<p>Running quick system test...</p>';
+            
+            // Test 1: Check Supabase client
+            let testResults = [];
+            if (window.supabaseClient) {
+                testResults.push('✅ Supabase client loaded');
+            } else {
+                testResults.push('❌ Supabase client NOT loaded');
+            }
+            
+            // Test 2: Check required functions
+            if (typeof window.updateRecentTransactions === 'function') {
+                testResults.push('✅ updateRecentTransactions function available');
+            } else {
+                testResults.push('❌ updateRecentTransactions function missing');
+            }
+            
+            if (typeof window.runDiagnostics === 'function') {
+                testResults.push('✅ runDiagnostics function available');
+            } else {
+                testResults.push('❌ runDiagnostics function missing');
+            }
+            
+            // Test 3: Check if on admin dashboard
+            const isAdminDash = window.location.pathname.includes('/admin/dashboard.html');
+            if (isAdminDash) {
+                testResults.push('✅ Currently on admin dashboard');
+            } else {
+                testResults.push('ℹ️  Not on admin dashboard (this is OK if testing elsewhere)');
+            }
+            
+            // Test 4: Check target table
+            const hasTable = document.querySelector('#recentTransactionsTable') !== null;
+            if (hasTable) {
+                testResults.push('✅ Recent transactions table found');
+            } else {
+                testResults.push('❌ Recent transactions table missing');
+            }
+            
+            // Display results
+            resultsDiv.innerHTML = `
+                <h4>Test Results:</h4>
+                <ul style="text-align: left;">
+                    ${testResults.map(r => `<li>${r}</li>`).join('')}
+                </ul>
+                <p><strong>Next Steps:</strong></p>
+                <ol>
+                    <li>Go to <a href="admin/dashboard.html">Admin Dashboard</a> to see if data appears</li>
+                    <li>Enter data in <a href="entry/sales.html">Data Entry</a> to test data flow</li>
+                    <li>For detailed diagnostics, open console and run: <code>runDiagnostics()</code></li>
+                </ol>
+            `;
+        }
+    </script>
+</body>
+</html>

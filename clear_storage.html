@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear LocalStorage</title>
+</head>
+<body>
+    <h1>Clearing LocalStorage...</h1>
+    <p>Please wait while we clear all dummy data from localStorage...</p>
+    
+    <script>
+        // Clear all localStorage entries related to our application
+        localStorage.removeItem('salesEntries');
+        localStorage.removeItem('expenseEntries');
+        localStorage.removeItem('dieselEntries');
+        localStorage.removeItem('repairEntries');
+        localStorage.removeItem('damageEntries');
+        
+        console.log('All localStorage entries cleared successfully!');
+        console.log('Current localStorage contents:', Object.keys(localStorage));
+        
+        // Wait a moment then redirect back to the main page
+        setTimeout(function() {
+            document.body.innerHTML = '<h1>LocalStorage Cleared Successfully!</h1><p>All dummy data has been removed from your accounts.</p><p>You can now close this page.</p>';
+        }, 2000);
+    </script>
+</body>
+</html>

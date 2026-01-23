@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Starland Water Company</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <h3>Starland Water Co.</h3>
+                <p>Management</p>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                    <li><a href="sales.html" class="nav-link">Sales</a></li>
+                    <li><a href="expenses.html" class="nav-link">Expenses</a></li>
+                    <li><a href="diesel.html" class="nav-link">Diesel</a></li>
+                    <li><a href="repairs.html" class="nav-link">Repairs</a></li>
+                    <li><a href="damages.html" class="nav-link">Damages</a></li>
+                    <li><a href="reports.html" class="nav-link active">Reports</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1>Reports</h1>
+                <div class="header-controls">
+                    <select class="date-range-selector">
+                        <option value="today">Today</option>
+                        <option value="week" selected>This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="quarter">This Quarter</option>
+                        <option value="year">This Year</option>
+                    </select>
+                    <div class="user-profile">Management</div>
+                </div>
+            </header>
+            
+            <div class="report-grid">
+                <div class="report-card">
+                    <h3>Sales Report</h3>
+                    <p>Comprehensive analysis of sales performance</p>
+                    <button class="btn btn-primary" onclick="generateCSVReport('daily-sales')">Generate CSV</button>
+                </div>
+                
+                <div class="report-card">
+                    <h3>Expense Report</h3>
+                    <p>Detailed breakdown of all expenses</p>
+                    <button class="btn btn-primary" onclick="generateCSVReport('expense-analysis')">Generate CSV</button>
+                </div>
+                
+                <div class="report-card">
+                    <h3>Profit & Loss Statement</h3>
+                    <p>Income statement showing revenues and expenses</p>
+                    <button class="btn btn-primary" onclick="generateCSVReport('profit-loss')">Generate CSV</button>
+                </div>
+                
+                <div class="report-card">
+                    <h3>Cash Flow Report</h3>
+                    <p>Analysis of cash movements in and out of business</p>
+                    <button class="btn btn-primary" onclick="generateCSVReport('cash-flow')">Generate CSV</button>
+                </div>
+                
+                <div class="report-card">
+                    <h3>Inventory Report</h3>
+                    <p>Current stock levels and movement analysis</p>
+                    <button class="btn btn-primary" onclick="generateCSVReport('inventory')">Generate CSV</button>
+                </div>
+                
+                <div class="report-card">
+                    <h3>Customer Analysis</h3>
+                    <p>Customer trends and purchasing patterns</p>
+                    <button class="btn btn-primary" onclick="generateCSVReport('customer-trends')">Generate CSV</button>
+                </div>
+            </div>
+            
+            <div class="data-table-card">
+                <div class="table-header">
+                    <h3>Generated Reports</h3>
+                    <div class="table-actions">
+                        <input type="text" class="search-input" placeholder="Search reports...">
+                        <button class="btn btn-secondary">Refresh</button>
+                    </div>
+                </div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Report Name</th>
+                            <th>Generated Date</th>
+                            <th>Period</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Monthly Sales Report</td>
+                            <td>2023-06-15</td>
+                            <td>May 2023</td>
+                            <td><span class="status success">Ready</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-secondary">View</button>
+                                <button class="btn btn-sm btn-secondary">Download</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Expense Analysis</td>
+                            <td>2023-06-14</td>
+                            <td>Q2 2023</td>
+                            <td><span class="status success">Ready</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-secondary">View</button>
+                                <button class="btn btn-sm btn-secondary">Download</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Profit & Loss Statement</td>
+                            <td>2023-06-10</td>
+                            <td>May 2023</td>
+                            <td><span class="status success">Ready</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-secondary">View</button>
+                                <button class="btn btn-sm btn-secondary">Download</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Customer Trends</td>
+                            <td>2023-06-05</td>
+                            <td>Jan-May 2023</td>
+                            <td><span class="status success">Ready</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-secondary">View</button>
+                                <button class="btn btn-sm btn-secondary">Download</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="pagination">
+                    <button class="btn btn-secondary">Previous</button>
+                    <span>Page 1 of 2</span>
+                    <button class="btn btn-primary">Next</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="../js/supabase.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>

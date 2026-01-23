@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starland Water Company - Login</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-form">
+            <h1>Starland Water Company</h1>
+            <h2>Financial Management System</h2>
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="button" id="testConnection" class="btn btn-secondary" style="margin-left: 10px;">Test Connection</button>
+            </form>
+            <div class="form-footer">
+                <p>Don't have an account? <a href="#" id="showRegisterForm">Register here</a></p>
+            </div>
+            
+            <!-- Registration Form (initially hidden) -->
+            <form id="registerForm" style="display: none;">
+                <div class="input-group">
+                    <label for="regEmail">Email</label>
+                    <input type="email" id="regEmail" name="regEmail" required>
+                </div>
+                <div class="input-group">
+                    <label for="regPassword">Password</label>
+                    <input type="password" id="regPassword" name="regPassword" required>
+                </div>
+                <div class="input-group">
+                    <label for="regConfirmPassword">Confirm Password</label>
+                    <input type="password" id="regConfirmPassword" name="regConfirmPassword" required>
+                </div>
+                <div class="input-group">
+                    <label for="userRole">Role</label>
+                    <select id="userRole" name="userRole" required>
+                        <option value="entry">Data Entry</option>
+                        <option value="management">Management</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-secondary">Register</button>
+                <button type="button" id="showLoginForm" class="btn btn-link">Back to Login</button>
+            </form>
+        </div>
+    </div>
+    <script src="js/supabase.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/verify_integration.js"></script>
+    <script src="js/troubleshooting.js"></script>
+    
+    <!-- Troubleshooting modal -->
+    <div id="troubleshootingModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+        <div style="background-color: white; margin: 10% auto; padding: 20px; border-radius: 8px; width: 80%; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+            <h3>Troubleshooting Guide</h3>
+            <div id="setupInstructions"></div>
+            <button id="closeModal" class="btn btn-secondary" style="margin-top: 15px;">Close</button>
+        </div>
+    </div>
+    
+    <style>
+        .form-footer {
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .form-footer a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        .btn-link {
+            background: none;
+            border: none;
+            color: #3b82f6;
+            cursor: pointer;
+            padding: 0.5rem 0;
+            font-size: 1rem;
+        }
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</body>
+</html>

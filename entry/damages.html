@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Damages Entry - Starland Water Company</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-section">
+                <h3>Starland Water Co.</h3>
+                <p>Data Entry</p>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="sales.html" class="nav-link">Sales</a></li>
+                    <li><a href="expenses.html" class="nav-link">Expenses</a></li>
+                    <li><a href="diesel.html" class="nav-link">Diesel</a></li>
+                    <li><a href="repairs.html" class="nav-link">Repairs</a></li>
+                    <li><a href="damages.html" class="nav-link active">Damages</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1>Damages Entry</h1>
+            </header>
+            
+            <div class="form-container">
+                <div class="form-card">
+                    <h2>Record Damage</h2>
+                    
+                    <form id="damagesForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="damageNumber">Damage Number *</label>
+                                <input type="text" id="damageNumber" name="damageNumber" placeholder="Enter damage number">
+                            </div>
+                            <div class="form-group">
+                                <label for="damageDate">Date *</label>
+                                <input type="date" id="damageDate" name="damageDate" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="itemType">Item Type *</label>
+                                <select id="itemType" name="itemType" required>
+                                    <option value="">Select Item Type</option>
+                                    <option value="vehicle">Vehicle</option>
+                                    <option value="equipment">Equipment</option>
+                                    <option value="container">Container</option>
+                                    <option value="property">Property</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="itemName">Item Name *</label>
+                                <input type="text" id="itemName" name="itemName" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="damageCause">Damage Cause *</label>
+                                <select id="damageCause" name="damageCause" required>
+                                    <option value="">Select Cause</option>
+                                    <option value="accident">Accident</option>
+                                    <option value="wear_and_tear">Wear and Tear</option>
+                                    <option value="theft">Theft</option>
+                                    <option value="vandalism">Vandalism</option>
+                                    <option value="natural_cause">Natural Cause</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="estimatedValue">Estimated Value (KSH) *</label>
+                                <input type="number" id="estimatedValue" name="estimatedValue" min="0" step="0.01" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="severity">Severity Level *</label>
+                                <select id="severity" name="severity" required>
+                                    <option value="">Select Level</option>
+                                    <option value="low">Low</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="critical">Critical</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="responsibleParty">Responsible Party</label>
+                                <input type="text" id="responsibleParty" name="responsibleParty">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="description">Description *</label>
+                            <textarea id="description" name="description" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label for="notes">Notes</label>
+                            <textarea id="notes" name="notes" rows="3" placeholder="Additional details..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Save Transaction</button>
+                    </form>
+                </div>
+                
+                <div class="helper-text">
+                    <p><strong>Tip:</strong> All fields marked with * are required. Enter your own damage number.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="../js/supabase.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/entry.js"></script>
+</body>
+</html>

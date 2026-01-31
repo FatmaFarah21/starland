@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Starland Financial System - Management Login</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <div class="app-shell centered">
+    <div class="card auth-card">
+      <h1 class="app-title">Starland Financial System</h1>
+      <p class="app-subtitle">Management Portal</p>
+
+      <form id="loginForm" class="form">
+        <div id="error" class="alert hidden"></div>
+
+        <label class="field">
+          <span>Username</span>
+          <input type="text" id="email" autocomplete="username" required>
+        </label>
+
+        <label class="field">
+          <span>Password</span>
+          <input type="password" id="password" autocomplete="current-password" required>
+        </label>
+
+        <button type="submit" id="loginBtn" class="btn primary">Sign in</button>
+        <p style="margin-top: 0.25rem; font-size: 0.85rem;">
+          <a href="register.html" style="color: #60a5fa; text-decoration: underline;">Create Management Account</a>
+        </p>
+        <p style="margin-top: 0.25rem; font-size: 0.85rem;">
+          <a href="../data-entry/index.html" style="color: #60a5fa; text-decoration: underline;">Go to Data Entry Portal</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { signIn, signOut, getCurrentRole } from '../js/auth.js';
+
+    const form = document.getElementById('loginForm');
+    const errorBox = document.getElementById('error');
+    const loginBtn = document.getElementById('loginBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.classList.add('hidden');
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Signing in...';
+
+      const username = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        // Always treat input as username, convert to fake email for Supabase
+        const fakeEmail = `${username}@example.com`;
+
+        await signIn(fakeEmail, password);
+        console.log('Management login: signed in, checking role...');
+        const role = await getCurrentRole();
+        console.log('Management login: role =', role);
+
+        if (!role) {
+          console.error('Management login: no role found');
+          await signOut();
+          throw new Error('No role assigned to this account. Contact system admin.');
+        }
+
+        const isManagement = role === 'Admin' || role === 'Manager';
+        console.log('Management login: isManagement =', isManagement);
+        if (!isManagement) {
+          console.error('Management login: not a management role');
+          await signOut();
+          throw new Error('You do not have Management access. Please use the Data Entry portal.');
+        }
+
+        loginBtn.textContent = 'Redirecting...';
+        window.location.href = './dashboard.html';
+      } catch (err) {
+        console.error('Management login error', err);
+        errorBox.textContent = err.message || 'Login failed';
+        errorBox.classList.remove('hidden');
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Sign in';
+      }
+    });
+  </script>
+</body>
+</html>

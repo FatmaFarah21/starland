@@ -1,0 +1,160 @@
+.dashboard-shell {
+  min-height: 100vh;
+  background: #020617;
+  color: #e5e7eb;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+}
+
+.dashboard-content {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.sidebar {
+  background: #020617;
+  border-right: 1px solid #111827;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.sidebar-logo span {
+  color: #e5e7eb;
+}
+
+.sidebar-nav {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.5rem;
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+  background: #111827;
+  color: #e5e7eb;
+}
+
+.sidebar-link-icon {
+  width: 1.4rem;
+  display: flex;
+  justify-content: center;
+}
+
+.sidebar-footer {
+  margin-top: 2rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #111827;
+  background: #020617;
+}
+
+.dashboard-header-left h1 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.dashboard-header-left p {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.dashboard-user {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+  font-size: 0.85rem;
+}
+
+.dashboard-main {
+  padding: 1.5rem;
+}
+
+.card-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.metric-card {
+  background: #020617;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  border: 1px solid #111827;
+}
+
+.metric-label {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.metric-value {
+  margin-top: 0.3rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.btn.small {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .dashboard-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    align-items: center;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid #111827;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    margin-top: 0;
+    margin-left: 0.75rem;
+  }
+
+  .sidebar-link {
+    white-space: nowrap;
+  }
+}

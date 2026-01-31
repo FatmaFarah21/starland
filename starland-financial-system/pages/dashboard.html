@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Starland Financial Dashboard</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-shell">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-logo">
+          <span>💧</span>
+          <span>Starland</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="sidebar-link active">
+            <span class="sidebar-link-icon">🏠</span>
+            <span>Dashboard</span>
+          </a>
+          <a href="production.html" class="sidebar-link">
+            <span class="sidebar-link-icon">🏭</span>
+            <span>Production</span>
+          </a>
+          <a href="sales.html" class="sidebar-link">
+            <span class="sidebar-link-icon">💰</span>
+            <span>Sales</span>
+          </a>
+          <a href="expenses.html" class="sidebar-link">
+            <span class="sidebar-link-icon">💸</span>
+            <span>Expenses</span>
+          </a>
+          <a href="materials.html" class="sidebar-link">
+            <span class="sidebar-link-icon">🧱</span>
+            <span>Materials</span>
+          </a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <span id="sidebarUserEmail"></span>
+      </div>
+    </aside>
+    <div class="dashboard-content">
+      <header class="dashboard-header">
+        <div class="dashboard-header-left">
+          <h1>Financial Overview</h1>
+          <p>Key metrics for your Starland water business</p>
+        </div>
+        <div class="dashboard-user">
+          <span id="userEmail"></span>
+          <button id="logoutBtn" class="btn small">Log out</button>
+        </div>
+      </header>
+
+      <main class="dashboard-main">
+        <section class="card-grid">
+          <article class="metric-card">
+            <div class="metric-label">Total Revenue (This Month)</div>
+            <div id="metricTotalRevenue" class="metric-value">KES 0.00</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-label">Total Expenses (This Month)</div>
+            <div id="metricTotalExpenses" class="metric-value">KES 0.00</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-label">Net Income (This Month)</div>
+            <div id="metricNetIncome" class="metric-value">KES 0.00</div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="../js/dashboard.js"></script>
+</body>
+</html>

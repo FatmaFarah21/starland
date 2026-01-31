@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Management Reports - Starland</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-shell">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-logo">
+          <span>💧</span>
+          <span>Starland</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="sidebar-link">
+            <span class="sidebar-link-icon">🏠</span>
+            <span>Management Dashboard</span>
+          </a>
+          <a href="reports.html" class="sidebar-link active">
+            <span class="sidebar-link-icon">📊</span>
+            <span>Reports</span>
+          </a>
+          <a href="settings.html" class="sidebar-link">
+            <span class="sidebar-link-icon">⚙️</span>
+            <span>Settings</span>
+          </a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <span id="sidebarUserEmail"></span>
+      </div>
+    </aside>
+    <div class="dashboard-content">
+      <header class="dashboard-header">
+        <div class="dashboard-header-left">
+          <h1>Management Reports</h1>
+          <p>High-level financial overview (last 30 days)</p>
+        </div>
+        <div class="dashboard-user">
+          <span id="userEmail"></span>
+          <button id="logoutBtn" class="btn small">Log out</button>
+        </div>
+      </header>
+
+      <main class="dashboard-main">
+        <section class="card-grid">
+          <article class="metric-card">
+            <div class="metric-label">Sales (Last 30 Days)</div>
+            <div id="metricSales30" class="metric-value">KES 0.00</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-label">Expenses (Last 30 Days)</div>
+            <div id="metricExpenses30" class="metric-value">KES 0.00</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-label">Net Income (Sales - Expenses)</div>
+            <div id="metricNet30" class="metric-value">KES 0.00</div>
+          </article>
+        </section>
+
+        <section style="margin-top: 1.5rem; display: grid; gap: 1.5rem;">
+          <article class="metric-card">
+            <div class="metric-label" style="margin-bottom: 0.75rem;">Outstanding Debtors</div>
+            <div id="debtorsEmpty" style="font-size: 0.9rem; color: #6b7280;">No outstanding debts.</div>
+            <div id="debtorsList" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;"></div>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-label" style="margin-bottom: 0.75rem;">Notes</div>
+            <p style="font-size: 0.9rem; color: #9ca3af;">
+              This view uses your existing sales and expenses data to calculate
+              sales, expenses, and net income for the last 30 days, plus a live
+              debtors list for any sales with outstanding balances.
+            </p>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="../js/reports.js"></script>
+</body>
+</html>

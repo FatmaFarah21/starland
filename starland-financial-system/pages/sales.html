@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sales Entry - Starland</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-shell">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-logo">
+          <span>💧</span>
+          <span>Starland</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="sidebar-link">
+            <span class="sidebar-link-icon">🏠</span>
+            <span>Dashboard</span>
+          </a>
+          <a href="production.html" class="sidebar-link">
+            <span class="sidebar-link-icon">🏭</span>
+            <span>Production</span>
+          </a>
+          <a href="sales.html" class="sidebar-link active">
+            <span class="sidebar-link-icon">💰</span>
+            <span>Sales</span>
+          </a>
+          <a href="expenses.html" class="sidebar-link">
+            <span class="sidebar-link-icon">💸</span>
+            <span>Expenses</span>
+          </a>
+          <a href="materials.html" class="sidebar-link">
+            <span class="sidebar-link-icon">🧱</span>
+            <span>Materials</span>
+          </a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <span id="sidebarUserEmail"></span>
+      </div>
+    </aside>
+    <div class="dashboard-content">
+      <header class="dashboard-header">
+        <div class="dashboard-header-left">
+          <h1>Sales Entry</h1>
+          <p>Record daily sales and credit customers</p>
+        </div>
+        <div class="dashboard-user">
+          <span id="userEmail"></span>
+          <button id="logoutBtn" class="btn small">Log out</button>
+        </div>
+      </header>
+
+      <main class="dashboard-main">
+        <section class="card-grid">
+          <article class="metric-card">
+            <div class="metric-label">Total Sales Today</div>
+            <div id="metricSalesToday" class="metric-value">KES 0.00</div>
+          </article>
+          <article class="metric-card">
+            <div class="metric-label">Pending Balance</div>
+            <div id="metricPendingBalance" class="metric-value">KES 0.00</div>
+          </article>
+        </section>
+
+        <section style="margin-top: 1.5rem; display: grid; gap: 1.5rem;">
+          <article class="metric-card">
+            <div class="metric-label" style="margin-bottom: 0.75rem;">Add New Sale</div>
+            <form id="salesForm" class="form">
+              <label class="field">
+                <span>Receipt #</span>
+                <input type="text" id="receipt_no" placeholder="e.g. 10452" required>
+              </label>
+
+              <label class="field">
+                <span>Date</span>
+                <input type="date" id="sale_date" required>
+              </label>
+
+              <label class="field">
+                <span>Product</span>
+                <select id="product_type" required style="padding: 0.6rem 0.75rem; border-radius: 0.5rem; border: 1px solid #374151; background: #020617; color: #e5e7eb;">
+                  <option value="">Select product</option>
+                  <option value="1.5L Water">1.5L Water</option>
+                  <option value="600ml Water">600ml Water</option>
+                  <option value="20L Jambo">20L Jambo</option>
+                  <option value="New Jerican">New Jerican</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Quantity</span>
+                <input type="number" id="quantity" min="0" step="1" required>
+              </label>
+
+              <label class="field">
+                <span>Unit Price (KES)</span>
+                <input type="number" id="unit_price" min="0" step="0.01" required>
+              </label>
+
+              <label class="field">
+                <span>Total Sale Amount (KES)</span>
+                <input type="number" id="total_amount" min="0" step="0.01" readonly>
+              </label>
+
+              <label class="field">
+                <span>Payment Method</span>
+                <select id="payment_method" required style="padding: 0.6rem 0.75rem; border-radius: 0.5rem; border: 1px solid #374151; background: #020617; color: #e5e7eb;">
+                  <option value="Cash">Cash</option>
+                  <option value="USD">USD</option>
+                  <option value="SSP">SSP</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Amount Paid</span>
+                <input type="number" id="amount_paid" min="0" step="0.01" required>
+              </label>
+
+              <label class="field">
+                <span>Outstanding Balance (KES)</span>
+                <input type="number" id="outstanding_balance" min="0" step="0.01" readonly>
+              </label>
+
+              <label class="field">
+                <span>Customer Name (optional)</span>
+                <input type="text" id="customer_name" placeholder="Walk-in or customer name">
+              </label>
+
+              <label class="field">
+                <span>Notes (optional)</span>
+                <input type="text" id="notes" placeholder="Additional details">
+              </label>
+
+              <button type="submit" id="saveSaleBtn" class="btn primary">Record Sale Entry</button>
+              <div id="salesError" class="alert hidden"></div>
+            </form>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-label" style="margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+              <span>Recent Entries</span>
+              <small id="salesCount" style="color: #9ca3af;"></small>
+            </div>
+            <div id="salesEmpty" style="font-size: 0.9rem; color: #6b7280;">No sales recorded yet today.</div>
+            <div id="salesList" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;"></div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="../js/sales.js"></script>
+</body>
+</html>

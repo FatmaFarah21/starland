@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Starland Financial System - Management Registration</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <div class="app-shell centered">
+    <div class="card auth-card">
+      <h1 class="app-title">Create Management Account</h1>
+      <p class="app-subtitle">New users get Admin access by default</p>
+
+      <form id="registerForm" class="form">
+        <div id="success" class="alert hidden" style="background-color: #065f46; border-color: #059669;"></div>
+        <div id="error" class="alert hidden"></div>
+
+        <label class="field">
+          <span>Username</span>
+          <input type="text" id="username" autocomplete="username" required>
+        </label>
+
+        <label class="field">
+          <span>Full Name</span>
+          <input type="text" id="full_name" required>
+        </label>
+
+        <label class="field">
+          <span>Password</span>
+          <input type="password" id="password" autocomplete="new-password" required>
+        </label>
+
+        <label class="field">
+          <span>Confirm Password</span>
+          <input type="password" id="password_confirm" autocomplete="new-password" required>
+        </label>
+
+        <button type="submit" id="registerBtn" class="btn primary">Register</button>
+        <p style="margin-top: 0.75rem; font-size: 0.85rem; color: #9ca3af;">
+          After registration you can log in using the <strong>Management Portal</strong>.
+        </p>
+        <p style="margin-top: 0.25rem; font-size: 0.85rem;">
+          <a href="index.html" style="color: #60a5fa; text-decoration: underline;">Go to Management login</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase } from '../js/config.js';
+
+    const form = document.getElementById('registerForm');
+    const successBox = document.getElementById('success');
+    const errorBox = document.getElementById('error');
+    const registerBtn = document.getElementById('registerBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      successBox.classList.add('hidden');
+      errorBox.classList.add('hidden');
+      registerBtn.disabled = true;
+      registerBtn.textContent = 'Registering...';
+
+      const username = document.getElementById('username').value.trim();
+      const fullName = document.getElementById('full_name').value.trim();
+      const password = document.getElementById('password').value;
+      const passwordConfirm = document.getElementById('password_confirm').value;
+
+      try {
+        if (!username || !fullName || !password || !passwordConfirm) {
+          throw new Error('Please fill in all fields.');
+        }
+        if (password !== passwordConfirm) {
+          throw new Error('Passwords do not match.');
+        }
+        if (username.length < 3) {
+          throw new Error('Username must be at least 3 characters.');
+        }
+        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+          throw new Error('Username can only contain letters, numbers, and underscores.');
+        }
+
+        // Create a fake email for Supabase auth (username@example.com)
+        const fakeEmail = `${username}@example.com`;
+
+        const { data, error } = await supabase.auth.signUp({
+          email: fakeEmail,
+          password,
+          options: {
+            data: { full_name: fullName },
+            emailRedirectTo: undefined, // Skip email verification
+          },
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        const user = data.user;
+        if (!user) {
+          throw new Error('Registration succeeded but no user was returned.');
+        }
+
+        const { data: roleRow, error: roleError } = await supabase
+          .from('roles')
+          .select('id')
+          .eq('role_name', 'Admin')
+          .single();
+
+        if (roleError || !roleRow) {
+          throw roleError || new Error('Could not find Admin role.');
+        }
+
+        const { error: profileError } = await supabase
+          .from('users')
+          .upsert({
+            id: user.id,
+            full_name: fullName,
+            username: username,
+            role_id: roleRow.id,
+          }, {
+            onConflict: 'id'
+          });
+
+        if (profileError) {
+          throw profileError;
+        }
+
+        successBox.textContent = 'Management account created successfully. You can now log in with your username and password.';
+        successBox.classList.remove('hidden');
+        form.reset();
+      } catch (err) {
+        console.error('Registration error', err);
+        errorBox.textContent = err.message || 'Registration failed.';
+        errorBox.classList.remove('hidden');
+      } finally {
+        registerBtn.disabled = false;
+        registerBtn.textContent = 'Register';
+      }
+    });
+  </script>
+</body>
+</html>

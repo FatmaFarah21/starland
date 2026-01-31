@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Materials & Inventory - Starland</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-shell">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-logo">
+          <span>💧</span>
+          <span>Starland</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="sidebar-link">
+            <span class="sidebar-link-icon">🏠</span>
+            <span>Dashboard</span>
+          </a>
+          <a href="production.html" class="sidebar-link">
+            <span class="sidebar-link-icon">🏭</span>
+            <span>Production</span>
+          </a>
+          <a href="sales.html" class="sidebar-link">
+            <span class="sidebar-link-icon">💰</span>
+            <span>Sales</span>
+          </a>
+          <a href="expenses.html" class="sidebar-link">
+            <span class="sidebar-link-icon">💸</span>
+            <span>Expenses</span>
+          </a>
+          <a href="materials.html" class="sidebar-link active">
+            <span class="sidebar-link-icon">🧱</span>
+            <span>Materials</span>
+          </a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <span id="sidebarUserEmail"></span>
+      </div>
+    </aside>
+    <div class="dashboard-content">
+      <header class="dashboard-header">
+        <div class="dashboard-header-left">
+          <h1>Materials & Inventory</h1>
+          <p>Track daily usage and stock balances</p>
+        </div>
+        <div class="dashboard-user">
+          <span id="userEmail"></span>
+          <button id="logoutBtn" class="btn small">Log out</button>
+        </div>
+      </header>
+
+      <main class="dashboard-main">
+        <section style="display: grid; gap: 1.5rem;">
+          <article class="metric-card">
+            <div class="metric-label" style="margin-bottom: 0.75rem;">Daily Usage Entry</div>
+            <form id="materialsForm" class="form">
+              <label class="field">
+                <span>Date</span>
+                <input type="date" id="usage_date" required>
+              </label>
+
+              <label class="field">
+                <span>Material</span>
+                <select id="material_type" required style="padding: 0.6rem 0.75rem; border-radius: 0.5rem; border: 1px solid #374151; background: #020617; color: #e5e7eb;">
+                  <option value="">Select material</option>
+                  <option value="B. Preform">B. Preform</option>
+                  <option value="S. Preform">S. Preform</option>
+                  <option value="Big Caps">Big Caps</option>
+                  <option value="Small Caps">Small Caps</option>
+                  <option value="Plastic">Plastic</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Quantity Used</span>
+                <input type="number" id="quantity_used" min="0" step="0.01" required>
+              </label>
+
+              <button type="submit" id="saveUsageBtn" class="btn primary">Submit Usage</button>
+              <div id="materialsError" class="alert hidden"></div>
+            </form>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-label" style="margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+              <span>Recent Usage</span>
+              <small id="materialsCount" style="color: #9ca3af;"></small>
+            </div>
+            <div id="materialsEmpty" style="font-size: 0.9rem; color: #6b7280;">No usage recorded yet today.</div>
+            <div id="materialsList" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;"></div>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-label" style="margin-bottom: 0.75rem;">Inventory Bought</div>
+            <form id="inventoryForm" class="form">
+              <label class="field">
+                <span>Date</span>
+                <input type="date" id="purchase_date" required>
+              </label>
+
+              <label class="field">
+                <span>Vendor Name</span>
+                <input type="text" id="vendor_name" placeholder="Supplier" required>
+              </label>
+
+              <label class="field">
+                <span>B. Preform</span>
+                <input type="number" id="b_preform" min="0" step="0.01" value="0">
+              </label>
+
+              <label class="field">
+                <span>S. Preform</span>
+                <input type="number" id="s_preform" min="0" step="0.01" value="0">
+              </label>
+
+              <label class="field">
+                <span>Big Caps</span>
+                <input type="number" id="big_caps" min="0" step="0.01" value="0">
+              </label>
+
+              <label class="field">
+                <span>Small Caps</span>
+                <input type="number" id="small_caps" min="0" step="0.01" value="0">
+              </label>
+
+              <label class="field">
+                <span>Plastic</span>
+                <input type="number" id="plastic_qty" min="0" step="0.01" value="0">
+              </label>
+
+              <label class="field">
+                <span>Total Cost (optional)</span>
+                <input type="number" id="total_cost" min="0" step="0.01">
+              </label>
+
+              <button type="submit" id="savePurchaseBtn" class="btn primary">Save Purchase</button>
+              <div id="inventoryError" class="alert hidden"></div>
+            </form>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-label" style="margin-bottom: 0.75rem;">Inventory Summary</div>
+            <div style="overflow-x: auto;">
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                <thead style="color: #9ca3af;">
+                  <tr>
+                    <th style="text-align: left; padding: 0.25rem 0.25rem;">Material</th>
+                    <th style="text-align: right; padding: 0.25rem 0.25rem;">Opening</th>
+                    <th style="text-align: right; padding: 0.25rem 0.25rem;">Added</th>
+                    <th style="text-align: right; padding: 0.25rem 0.25rem;">Used</th>
+                    <th style="text-align: right; padding: 0.25rem 0.25rem;">Expected</th>
+                    <th style="text-align: right; padding: 0.25rem 0.25rem;">Actual</th>
+                    <th style="text-align: right; padding: 0.25rem 0.25rem;">Variance</th>
+                  </tr>
+                </thead>
+                <tbody id="inventorySummaryBody"></tbody>
+              </table>
+            </div>
+            <p style="margin-top: 0.75rem; font-size: 0.8rem; color: #6b7280;">
+              Opening balance is treated as 0 for now; Expected = Added - Used.
+              Enter Actual to see variance in real time.
+            </p>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="../js/materials.js"></script>
+</body>
+</html>

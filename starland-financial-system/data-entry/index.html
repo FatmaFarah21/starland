@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Starland Financial System - Data Entry Login</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <div class="app-shell centered">
+    <div class="card auth-card">
+      <h1 class="app-title">Starland Financial System</h1>
+      <p class="app-subtitle">Data Entry Portal</p>
+
+      <form id="loginForm" class="form">
+        <div id="error" class="alert hidden"></div>
+
+        <label class="field">
+          <span>Username</span>
+          <input type="text" id="email" autocomplete="username" required>
+        </label>
+
+        <label class="field">
+          <span>Password</span>
+          <input type="password" id="password" autocomplete="current-password" required>
+        </label>
+
+        <button type="submit" id="loginBtn" class="btn primary">Sign in</button>
+        <p style="margin-top: 0.75rem; font-size: 0.85rem;">
+          Need an account? <a href="../register.html" style="color: #60a5fa; text-decoration: underline;">Register here</a>.
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { signIn, signOut, getCurrentRole } from '../js/auth.js';
+
+    const form = document.getElementById('loginForm');
+    const errorBox = document.getElementById('error');
+    const loginBtn = document.getElementById('loginBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.classList.add('hidden');
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Signing in...';
+
+      const username = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        // Treat input as username, convert to fake email used at registration
+        const fakeEmail = `${username}@example.com`;
+
+        await signIn(fakeEmail, password);
+        const role = await getCurrentRole();
+
+        if (!role) {
+          await signOut();
+          throw new Error('No role assigned to this account. Contact management.');
+        }
+
+        if (role === 'Admin' || role === 'Manager') {
+          await signOut();
+          throw new Error('This portal is for Data Entry users. Please use the Management login.');
+        }
+
+        // Data entry (e.g. role === 'User')
+        loginBtn.textContent = 'Redirecting...';
+        window.location.href = '../pages/dashboard.html';
+      } catch (err) {
+        errorBox.textContent = err.message || 'Login failed';
+        errorBox.classList.remove('hidden');
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Sign in';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Production Records - Starland</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-shell">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-logo">
+          <span>💧</span>
+          <span>Starland</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="sidebar-link">
+            <span class="sidebar-link-icon">🏠</span>
+            <span>Dashboard</span>
+          </a>
+          <a href="production.html" class="sidebar-link active">
+            <span class="sidebar-link-icon">🏭</span>
+            <span>Production</span>
+          </a>
+          <a href="sales.html" class="sidebar-link">
+            <span class="sidebar-link-icon">💰</span>
+            <span>Sales</span>
+          </a>
+          <a href="expenses.html" class="sidebar-link">
+            <span class="sidebar-link-icon">💸</span>
+            <span>Expenses</span>
+          </a>
+          <a href="materials.html" class="sidebar-link">
+            <span class="sidebar-link-icon">🧱</span>
+            <span>Materials</span>
+          </a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <span id="sidebarUserEmail"></span>
+      </div>
+    </aside>
+    <div class="dashboard-content">
+      <header class="dashboard-header">
+        <div class="dashboard-header-left">
+          <h1>Production Records</h1>
+          <p>Track daily production and loading for Starland</p>
+        </div>
+        <div class="dashboard-user">
+          <span id="userEmail"></span>
+          <button id="logoutBtn" class="btn small">Log out</button>
+        </div>
+      </header>
+
+      <main class="dashboard-main">
+        <section class="card-grid">
+          <article class="metric-card">
+            <div class="metric-label">Today's Total</div>
+            <div id="metricTodayTotal" class="metric-value">0 units</div>
+          </article>
+        </section>
+
+        <section style="margin-top: 1.5rem; display: grid; gap: 1.5rem;">
+        <article class="metric-card">
+          <div class="metric-label" style="margin-bottom: 0.75rem;">New Entry</div>
+          <form id="productionForm" class="form">
+            <label class="field">
+              <span>Date</span>
+              <input type="date" id="record_date" required>
+            </label>
+
+            <label class="field">
+              <span>Category</span>
+              <select id="category" required style="padding: 0.6rem 0.75rem; border-radius: 0.5rem; border: 1px solid #374151; background: #020617; color: #e5e7eb;">
+                <option value="">Select category</option>
+                <option value="B. Production">B. Production</option>
+                <option value="B. Loading">B. Loading</option>
+                <option value="B. Store">B. Store</option>
+                <option value="S. Production">S. Production</option>
+                <option value="S. Loading">S. Loading</option>
+                <option value="S. Store">S. Store</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Quantity</span>
+              <input type="number" id="quantity" min="0" step="0.01" required>
+            </label>
+
+            <label class="field">
+              <span>Notes (optional)</span>
+              <input type="text" id="notes" placeholder="Remarks, batch info, etc.">
+            </label>
+
+            <button type="submit" id="saveBtn" class="btn primary">Save Record</button>
+            <div id="formError" class="alert hidden"></div>
+          </form>
+        </article>
+
+        <article class="metric-card">
+          <div class="metric-label" style="margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+            <span>Today's Logs</span>
+            <small id="logsCount" style="color: #9ca3af;"></small>
+          </div>
+          <div id="logsEmpty" style="font-size: 0.9rem; color: #6b7280;">No records yet for today.</div>
+          <div id="logsList" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;"></div>
+        </article>
+      </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="../js/production.js"></script>
+</body>
+</html>

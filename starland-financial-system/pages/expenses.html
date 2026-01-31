@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Expenses - Starland</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-shell">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-logo">
+          <span>💧</span>
+          <span>Starland</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="sidebar-link">
+            <span class="sidebar-link-icon">🏠</span>
+            <span>Dashboard</span>
+          </a>
+          <a href="production.html" class="sidebar-link">
+            <span class="sidebar-link-icon">🏭</span>
+            <span>Production</span>
+          </a>
+          <a href="sales.html" class="sidebar-link">
+            <span class="sidebar-link-icon">💰</span>
+            <span>Sales</span>
+          </a>
+          <a href="expenses.html" class="sidebar-link active">
+            <span class="sidebar-link-icon">💸</span>
+            <span>Expenses</span>
+          </a>
+          <a href="materials.html" class="sidebar-link">
+            <span class="sidebar-link-icon">🧱</span>
+            <span>Materials</span>
+          </a>
+        </nav>
+      </div>
+      <div class="sidebar-footer">
+        <span id="sidebarUserEmail"></span>
+      </div>
+    </aside>
+    <div class="dashboard-content">
+      <header class="dashboard-header">
+        <div class="dashboard-header-left">
+          <h1>Expenses</h1>
+          <p>Track daily operational costs</p>
+        </div>
+        <div class="dashboard-user">
+          <span id="userEmail"></span>
+          <button id="logoutBtn" class="btn small">Log out</button>
+        </div>
+      </header>
+
+      <main class="dashboard-main">
+        <section class="card-grid">
+          <article class="metric-card">
+            <div class="metric-label">Today's Expenses</div>
+            <div id="metricExpensesToday" class="metric-value">KES 0.00</div>
+          </article>
+        </section>
+
+        <section style="margin-top: 1.5rem; display: grid; gap: 1.5rem;">
+          <article class="metric-card">
+            <div class="metric-label" style="margin-bottom: 0.75rem;">New Expense</div>
+            <form id="expensesForm" class="form">
+              <label class="field">
+                <span>Date</span>
+                <input type="date" id="expense_date" required>
+              </label>
+
+              <label class="field">
+                <span>Expense Type</span>
+                <input type="text" id="expense_type" placeholder="Fuel, Rent, Salaries..." required>
+              </label>
+
+              <label class="field">
+                <span>Description (optional)</span>
+                <input type="text" id="description" placeholder="More details">
+              </label>
+
+              <label class="field">
+                <span>Amount (KES)</span>
+                <input type="number" id="amount" min="0" step="0.01" required>
+              </label>
+
+              <label class="field">
+                <span>Payment Method</span>
+                <input type="text" id="payment_method" placeholder="Cash, Bank, M-Pesa..." required>
+              </label>
+
+              <button type="submit" id="saveExpenseBtn" class="btn primary">Save Expense</button>
+              <div id="expensesError" class="alert hidden"></div>
+            </form>
+          </article>
+
+          <article class="metric-card">
+            <div class="metric-label" style="margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+              <span>Today's Expenses</span>
+              <small id="expensesCount" style="color: #9ca3af;"></small>
+            </div>
+            <div id="expensesEmpty" style="font-size: 0.9rem; color: #6b7280;">No expenses recorded yet today.</div>
+            <div id="expensesList" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;"></div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module" src="../js/expenses.js"></script>
+</body>
+</html>

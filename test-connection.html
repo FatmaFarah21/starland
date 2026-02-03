@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Connection Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/supabase-db.js"></script>
+    <style>
+        body {
+            font-family: Inter, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f6f7f8;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h1 { color: #136dec; }
+        .test-button {
+            background: #136dec;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px 10px 0;
+        }
+        .test-button:hover { background: #0f5cc7; }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Supabase Connection Test</h1>
+        <p>Test your database connection and view your data</p>
+
+        <button class="test-button" onclick="testConnection()">Test Connection</button>
+        <button class="test-button" onclick="loadAllData()">Load All Data</button>
+        <button class="test-button" onclick="clearResults()">Clear Results</button>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function showResult(title, data, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const resultHTML = `
+                <div class="result ${type}">
+                    <strong>${title}</strong><br>
+                    ${typeof data === 'object' ? JSON.stringify(data, null, 2) : data}
+                </div>
+            `;
+            resultsDiv.innerHTML += resultHTML;
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        async function testConnection() {
+            showResult('🔍 Testing Connection...', 'Connecting to Supabase...', 'info');
+            
+            try {
+                // Test 1: Check if Supabase client exists
+                if (!window.supabaseClient) {
+                    showResult('❌ Connection Failed', 'Supabase client not initialized', 'error');
+                    return;
+                }
+                showResult('✅ Supabase Client', 'Successfully initialized', 'success');
+
+                // Test 2: Check if database helper exists
+                if (!window.db) {
+                    showResult('❌ Database Helper Failed', 'Database helper not initialized', 'error');
+                    return;
+                }
+                showResult('✅ Database Helper', 'Successfully initialized', 'success');
+
+                // Test 3: Try fetching from production_records
+                showResult('🔍 Testing', 'Fetching production_records...', 'info');
+                const productionTest = await window.db.getProduction();
+                showResult('✅ Production Records', `Found ${productionTest?.length || 0} records`, 'success');
+
+                // Test 4: Try fetching from sales
+                const salesTest = await window.db.getSales();
+                showResult('✅ Sales', `Found ${salesTest?.length || 0} records`, 'success');
+
+                // Test 5: Try fetching from expenses
+                const expensesTest = await window.db.getExpenses();
+                showResult('✅ Expenses', `Found ${expensesTest?.length || 0} records`, 'success');
+
+                showResult('✅ All Tests Passed!', 'Your database connection is working perfectly!', 'success');
+
+            } catch (error) {
+                showResult('❌ Error During Test', error.message || 'Unknown error', 'error');
+                console.error('Full error:', error);
+            }
+        }
+
+        async function loadAllData() {
+            clearResults();
+            showResult('📊 Loading Data', 'Fetching from all tables...', 'info');
+
+            try {
+                // Load Production
+                const production = await window.db.getProduction();
+                showResult('📦 Production Records', production, 'info');
+
+                // Load Sales
+                const sales = await window.db.getSales();
+                showResult('💰 Sales', sales, 'info');
+
+                // Load Expenses
+                const expenses = await window.db.getExpenses();
+                showResult('💸 Expenses', expenses, 'info');
+
+                // Load Materials Usage
+                const materials = await window.db.getMaterialsDaily();
+                showResult('📋 Materials Usage', materials, 'info');
+
+                // Load Inventory Purchases
+                const inventory = await window.db.getInventoryPurchases();
+                showResult('📦 Inventory Purchases', inventory, 'info');
+
+                // Load Inventory Summary
+                const summary = await window.db.getInventorySummary();
+                showResult('📊 Inventory Summary', summary, 'info');
+
+            } catch (error) {
+                showResult('❌ Error Loading Data', error.message || 'Unknown error', 'error');
+                console.error('Full error:', error);
+            }
+        }
+
+        // Auto-test on load
+        window.addEventListener('load', () => {
+            console.log('Test page loaded. Click buttons to test connection.');
+        });
+    </script>
+</body>
+</html>

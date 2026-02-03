@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Sales - Starland Water Company</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Configuration -->
+    <script src="../js/supabase-config.js"></script>
+    <!-- Supabase Database Helper -->
+    <script src="../js/supabase-db.js"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "sidebar-bg": "#0f172a",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Sidebar Scrollbar */
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+        
+        /* Main Content Scrollbar (Light Mode) */
+        main::-webkit-scrollbar {
+            width: 8px;
+        }
+        main::-webkit-scrollbar-track {
+            background: #f6f7f8;
+        }
+        main::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        main::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        /* Dark Mode Scrollbar */
+        .dark main::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .dark main::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        .dark main::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        
+        /* Table Container Scrollbar */
+        .table-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        .table-container::-webkit-scrollbar-track {
+            background: #f6f7f8;
+        }
+        .dark .table-container::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .dark .table-container::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 3px;
+        }
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .dark .table-container::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Scroll-to-top button styles */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: #136dec;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 99;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .scroll-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .scroll-to-top:hover {
+            background-color: #0f5cc7;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+        }
+        .scroll-to-top:active {
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 h-screen overflow-hidden">
+    <div class="flex h-full">
+        <!-- UNIFIED SIDEBAR -->
+        <aside class="w-64 flex-shrink-0 bg-sidebar-bg text-slate-300 flex flex-col border-r border-slate-800 hidden md:flex">
+            <div class="p-6 border-b border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold">
+                        <span class="material-symbols-outlined text-xl">water_drop</span>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg text-white">Starland Water</h1>
+                        <p class="text-xs text-slate-500">Management</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 px-3 py-4 space-y-1 sidebar-scroll overflow-y-auto">
+                <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Main Menu</p>
+                
+                <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors group">
+                    <span class="material-symbols-outlined text-xl">dashboard</span>
+                    <span class="text-sm font-semibold">Dashboard</span>
+                </a>
+
+                <a href="production.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors group">
+                    <span class="material-symbols-outlined text-xl">factory</span>
+                    <span class="text-sm font-semibold">Production</span>
+                </a>
+
+                <a href="sales.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/15 text-primary hover:bg-primary/20 transition-colors group">
+                    <span class="material-symbols-outlined text-xl">shopping_cart</span>
+                    <span class="text-sm font-semibold">Sales</span>
+                </a>
+
+                <a href="expenses.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors group">
+                    <span class="material-symbols-outlined text-xl">account_balance_wallet</span>
+                    <span class="text-sm font-semibold">Expenses</span>
+                </a>
+
+                <a href="materials.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors group">
+                    <span class="material-symbols-outlined text-xl">inventory_2</span>
+                    <span class="text-sm font-semibold">Materials</span>
+                </a>
+
+                <a href="inventory.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors group">
+                    <span class="material-symbols-outlined text-xl">warehouse</span>
+                    <span class="text-sm font-semibold">Inventory</span>
+                </a>
+
+                <a href="reports.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors group">
+                    <span class="material-symbols-outlined text-xl">analytics</span>
+                    <span class="text-sm font-semibold">Reports</span>
+                </a>
+
+                <div class="border-t border-slate-700 my-3 pt-3">
+                    <a href="settings.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors group">
+                        <span class="material-symbols-outlined text-xl">settings</span>
+                        <span class="text-sm font-semibold">Settings</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="p-4 border-t border-slate-800">
+                <div class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary">person</span>
+                    </div>
+                    <div class="overflow-hidden flex-1">
+                        <p class="text-sm font-semibold truncate" id="user-name">Admin User</p>
+                        <p class="text-xs text-slate-500 truncate" id="user-role">Management</p>
+                    </div>
+                </div>
+                <button onclick="handleLogout()" class="w-full mt-2 h-9 text-sm font-semibold text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- HEADER -->
+            <header class="sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 h-16 px-6 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <h1 class="text-xl font-bold text-slate-900 dark:text-white">Sales Management</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                        <span class="material-symbols-outlined text-slate-600 dark:text-slate-400">notifications</span>
+                    </button>
+                    <button onclick="toggleDarkMode()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                        <span class="material-symbols-outlined text-slate-600 dark:text-slate-400" id="theme-icon">dark_mode</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- PAGE CONTENT -->
+            <main class="flex-1 overflow-y-auto p-6 space-y-6">
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-sm text-slate-600 dark:text-slate-400">Daily Sales</p>
+                                <p class="text-3xl font-bold text-slate-900 dark:text-white mt-1">$4,250</p>
+                                <p class="text-sm text-green-600 font-semibold mt-2">↑ 8.4% today</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-green-600 text-2xl">trending_up</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-sm text-slate-600 dark:text-slate-400">Credit Sales</p>
+                                <p class="text-3xl font-bold text-slate-900 dark:text-white mt-1">$840.50</p>
+                                <p class="text-sm text-amber-600 font-semibold mt-2">Pending payment</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-amber-600 text-2xl">schedule</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="text-sm text-slate-600 dark:text-slate-400">Units Sold</p>
+                                <p class="text-3xl font-bold text-slate-900 dark:text-white mt-1">1,420</p>
+                                <p class="text-sm text-primary font-semibold mt-2">Pieces today</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary text-2xl">inventory_2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Entry Form -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-4">New Sales Entry</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Receipt #</label>
+                            <input type="text" placeholder="SLS-2024-001" class="h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"/>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Date</label>
+                            <input type="date" class="h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"/>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Product</label>
+                            <select class="h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm cursor-pointer">
+                                <option>1.5L Bottle</option>
+                                <option>600ml Bottle</option>
+                                <option>20L Jug</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Qty</label>
+                            <input type="number" placeholder="0" class="h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"/>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Unit Price</label>
+                            <input type="number" placeholder="0.00" class="h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"/>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Payment</label>
+                            <select class="h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm cursor-pointer">
+                                <option>Cash</option>
+                                <option>USD</option>
+                                <option>SSP</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Total Amount (KES)</label>
+                            <input id="saleTotal" type="number" placeholder="0.00" class="h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm" onchange="calculateRemaining()"/>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Amount Paid (KES)</label>
+                            <input id="salePaid" type="number" placeholder="0.00" class="h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm" onchange="calculateRemaining()"/>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Amount Remaining (KES)</label>
+                            <input id="saleRemaining" type="number" placeholder="0.00" readonly class="h-10 px-3 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm font-semibold"/>
+                        </div>
+                        <div class="flex flex-col gap-2 justify-end">
+                            <button onclick="handleAddSale()" class="h-10 bg-primary hover:bg-blue-700 active:scale-95 text-white font-bold rounded-lg transition-all">
+                                Add Sale
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+                    <div class="p-6 border-b border-slate-200 dark:border-slate-800">
+                        <h2 class="text-lg font-bold text-slate-900 dark:text-white">Recent Transactions</h2>
+                    </div>
+                    <div class="table-container overflow-x-auto max-h-96">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
+                            <tr>
+                                <th class="px-6 py-3 text-left font-semibold text-slate-700 dark:text-slate-300">Date</th>
+                                <th class="px-6 py-3 text-left font-semibold text-slate-700 dark:text-slate-300">Customer</th>
+                                <th class="px-6 py-3 text-left font-semibold text-slate-700 dark:text-slate-300">Product</th>
+                                <th class="px-6 py-3 text-right font-semibold text-slate-700 dark:text-slate-300">Qty</th>
+                                <th class="px-6 py-3 text-right font-semibold text-slate-700 dark:text-slate-300">Total (KES)</th>
+                                <th class="px-6 py-3 text-right font-semibold text-slate-700 dark:text-slate-300">Paid (KES)</th>
+                                <th class="px-6 py-3 text-right font-semibold text-slate-700 dark:text-slate-300">Remaining (KES)</th>
+                                <th class="px-6 py-3 text-center font-semibold text-slate-700 dark:text-slate-300">Status</th>
+                                <th class="px-6 py-3 text-right font-semibold text-slate-700 dark:text-slate-300">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sales-tbody" class="divide-y divide-slate-200 dark:divide-slate-800">
+                            <!-- Populated by loadSalesData() -->
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800">
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Edit Sale</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Customer Name</label>
+                    <input id="editCustomerName" type="text" class="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm mt-1"/>
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Product</label>
+                    <input id="editProduct" type="text" class="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm mt-1"/>
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Quantity</label>
+                    <input id="editQuantity" type="number" class="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm mt-1"/>
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Total Amount (KES)</label>
+                    <input id="editTotalAmount" type="number" class="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm mt-1" onchange="calculateEditRemaining()"/>
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Amount Paid (KES)</label>
+                    <input id="editAmountPaid" type="number" class="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm mt-1" onchange="calculateEditRemaining()"/>
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Amount Remaining (KES)</label>
+                    <input id="editAmountRemaining" type="number" readonly class="w-full h-10 px-3 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg outline-none text-sm mt-1 font-semibold"/>
+                </div>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeEditModal()" class="flex-1 h-10 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-900 dark:text-white font-semibold rounded-lg transition-colors">Cancel</button>
+                <button onclick="saveEditSale()" class="flex-1 h-10 bg-primary hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/sales.js"></script>
+        window.addEventListener('load', async () => {
+            const userName = localStorage.getItem('user_name') || 'Admin User';
+            document.getElementById('user-name').textContent = userName;
+            
+            // Load sales data
+            await loadSalesData();
+        });
+
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            if (document.documentElement.classList.contains('dark')) {
+                icon.textContent = 'light_mode';
+            } else {
+                icon.textContent = 'dark_mode';
+            }
+        }
+
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
+        }
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+        updateThemeIcon();
+
+        // Scroll to Top Functionality
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+        
+        // Show/hide scroll to top button
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300 || document.querySelector('main').scrollTop > 300) {
+                scrollToTopBtn?.classList.add('show');
+            } else {
+                scrollToTopBtn?.classList.remove('show');
+            }
+        });
+        
+        // Also check main content scrolling
+        const mainContent = document.querySelector('main');
+        if (mainContent) {
+            mainContent.addEventListener('scroll', () => {
+                if (mainContent.scrollTop > 300) {
+                    scrollToTopBtn?.classList.add('show');
+                } else {
+                    scrollToTopBtn?.classList.remove('show');
+                }
+            });
+        }
+        
+        // Scroll to top function
+        function scrollToTop() {
+            const mainContent = document.querySelector('main');
+            if (mainContent) {
+                mainContent.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            } else {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }
+        }
+    </script>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTopBtn" class="scroll-to-top" onclick="scrollToTop()" title="Scroll to top">
+        <span class="material-symbols-outlined">arrow_upward</span>
+    </button>
+</body>
+</html>

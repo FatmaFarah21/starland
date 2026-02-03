@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Materials &amp; Inventory Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Supabase JS Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Supabase Configuration -->
+<script src="../../js/supabase-config.js"></script>
+<!-- Supabase Database Helper -->
+<script src="../../js/supabase-db.js"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "sidebar-bg": "#0f172a",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .sidebar-item-active {
+            background-color: #1e293b;
+            border-left: 4px solid #136dec;
+            color: #ffffff;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="flex min-h-screen overflow-hidden">
+<aside class="w-64 bg-sidebar-bg flex-shrink-0 border-r border-slate-800 md:flex flex-col">
+<div class="p-6">
+<div class="flex items-center gap-3 text-white">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white">water_drop</span>
+</div>
+<span class="font-bold text-lg tracking-tight">Starland Water</span>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors group" href="dashboard.html">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors group" href="production.html">
+<span class="material-symbols-outlined text-xl">factory</span>
+<span class="text-sm font-medium">Production</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors group" href="sales.html">
+<span class="material-symbols-outlined text-xl">trending_up</span>
+<span class="text-sm font-medium">Sales</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors group" href="expenses.html">
+<span class="material-symbols-outlined text-xl">account_balance_wallet</span>
+<span class="text-sm font-medium">Expenses</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 sidebar-item-active text-white rounded-lg group" href="materials.html">
+<span class="material-symbols-outlined text-xl">inventory_2</span>
+<span class="text-sm font-bold">Materials</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-800">
+<a class="flex items-center gap-3 px-3 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</div>
+</aside>
+<main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+<header class="bg-white dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 h-16 sticky top-0 z-30 flex items-center justify-between px-8">
+<div class="flex items-center gap-4">
+<h1 class="text-xl font-bold text-slate-800 dark:text-white">Materials &amp; Inventory Summary</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-lg">calendar_month</span>
+                        Oct 24, 2023
+                    </button>
+<div class="size-8 rounded-full bg-slate-200 overflow-hidden">
+<img alt="User" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAh2PzfSzYi4-3X5n-piL51eMgZcfkjHUSBN_iOmAI0x6hvZmYBkdc9JwlrOxMBgMoN03m0K5MDGQtZzYN03V-RXqlpbrHCgP9Q5IIWO7kBOZ-SLdPjJje0vFNFYODXTcn-D5ZVlGasOGEGtH_7t84fpfFsKxFoaS7Pw7JuqttLAedt65mwUredFOl8YjcT0s5IWmcmQ4qA61kwFKXYZVf4Wv_qH8ciaGymLVTNMLLdEOZwDOhxhkztvlFZeFjjPINzxHOXCHbhDxM3"/>
+</div>
+</div>
+</header>
+<div class="p-8 max-w-7xl mx-auto w-full space-y-8">
+<!-- Section 1: Daily Material Used -->
+<div class="space-y-4">
+<div class="flex flex-col">
+<h2 class="text-lg font-bold text-slate-900 dark:text-white leading-tight">Daily Material Used</h2>
+<p class="text-sm text-slate-500 dark:text-slate-400">Record daily material consumption</p>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+<div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+<h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">add_box</span>
+New Daily Entry
+</h3>
+</div>
+<div class="p-6 space-y-5">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-5">
+<div>
+<label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Date</label>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary px-4 py-2.5" type="date" id="material-date"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">B. Preform (Units)</label>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary px-4 py-2.5" type="number" placeholder="0" id="b-preform"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">S. Preform (Units)</label>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary px-4 py-2.5" type="number" placeholder="0" id="s-preform"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Big Caps (Units)</label>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary px-4 py-2.5" type="number" placeholder="0" id="big-caps"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Small Caps (Units)</label>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary px-4 py-2.5" type="number" placeholder="0" id="small-caps"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Plastic (KG)</label>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary px-4 py-2.5" type="number" placeholder="0.00" step="0.01" id="plastic-used"/>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/20" onclick="handleSubmitDailyMaterial()">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+Submit Daily Usage
+</button>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date</th>
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">B. Preform</th>
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">S. Preform</th>
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Big Caps</th>
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Small Caps</th>
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Plastic (KG)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="p-4 text-sm font-semibold text-slate-900 dark:text-white">Feb 02, 2026</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">1,200</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">850</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">2,100</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">1,950</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">65.4</td>
+</tr>
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="p-4 text-sm font-semibold text-slate-900 dark:text-white">Feb 01, 2026</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">1,150</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">820</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">2,050</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">1,900</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">63.2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+<!-- Section 2: Inventory in Store Summary -->
+<div class="space-y-4">
+<div class="flex flex-col">
+<h2 class="text-lg font-bold text-slate-900 dark:text-white leading-tight">Summary of Inventory in Store</h2>
+<p class="text-sm text-slate-500 dark:text-slate-400">Current stock levels by material category</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl">
+<p class="text-slate-500 text-xs font-bold uppercase mb-2">B. Preform</p>
+<p class="text-3xl font-bold text-primary">24,500</p>
+<p class="text-xs text-slate-400 mt-1">Units in stock</p>
+</div>
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl">
+<p class="text-slate-500 text-xs font-bold uppercase mb-2">S. Preform</p>
+<p class="text-3xl font-bold text-primary">18,200</p>
+<p class="text-xs text-slate-400 mt-1">Units in stock</p>
+</div>
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl">
+<p class="text-slate-500 text-xs font-bold uppercase mb-2">Big Caps</p>
+<p class="text-3xl font-bold text-primary">32,150</p>
+<p class="text-xs text-slate-400 mt-1">Units in stock</p>
+</div>
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl">
+<p class="text-slate-500 text-xs font-bold uppercase mb-2">Small Caps</p>
+<p class="text-3xl font-bold text-primary">28,400</p>
+<p class="text-xs text-slate-400 mt-1">Units in stock</p>
+</div>
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-xl">
+<p class="text-slate-500 text-xs font-bold uppercase mb-2">Plastic</p>
+<p class="text-3xl font-bold text-primary">465.2</p>
+<p class="text-xs text-slate-400 mt-1">KG in stock</p>
+</div>
+</div>
+</div>
+
+<!-- Section 3: Inventory Bought -->
+<div class="space-y-4">
+<div class="flex flex-col">
+<h2 class="text-lg font-bold text-slate-900 dark:text-white leading-tight">Inventory Bought</h2>
+<p class="text-sm text-slate-500 dark:text-slate-400">Record new inventory purchases</p>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+<div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+<h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">shopping_cart</span>
+New Purchase Entry
+</h3>
+</div>
+<div class="p-6 space-y-5">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+<div>
+<label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Date</label>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary px-4 py-2.5" type="date" id="purchase-date"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Category</label>
+<select class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary px-4 py-2.5 appearance-none" id="purchase-category">
+<option>B. Preform</option>
+<option>S. Preform</option>
+<option>Big Caps</option>
+<option>Small Caps</option>
+<option>Plastic</option>
+</select>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Quantity</label>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary px-4 py-2.5" type="number" placeholder="0" id="purchase-qty"/>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/20" onclick="handleSubmitInventoryPurchase()">
+<span class="material-symbols-outlined text-xl">check_circle</span>
+Submit Purchase Record
+</button>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date</th>
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Category</th>
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Quantity</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="p-4 text-sm font-semibold text-slate-900 dark:text-white">Feb 01, 2026</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">B. Preform</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">5,000</td>
+</tr>
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="p-4 text-sm font-semibold text-slate-900 dark:text-white">Jan 31, 2026</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">Plastic</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">100 KG</td>
+</tr>
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="p-4 text-sm font-semibold text-slate-900 dark:text-white">Jan 30, 2026</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">Big Caps</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">10,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+<script>
+function handleSubmitDailyMaterial() {
+    const date = document.getElementById('material-date').value;
+    const bPreform = document.getElementById('b-preform').value;
+    const sPreform = document.getElementById('s-preform').value;
+    const bigCaps = document.getElementById('big-caps').value;
+    const smallCaps = document.getElementById('small-caps').value;
+    const plastic = document.getElementById('plastic-used').value;
+    
+    if (!date || (!bPreform && !sPreform && !bigCaps && !smallCaps && !plastic)) {
+        alert('Please enter date and at least one material value');
+        return;
+    }
+    
+    alert(`Daily material recorded:\nB. Preform: ${bPreform || 0}\nS. Preform: ${sPreform || 0}\nBig Caps: ${bigCaps || 0}\nSmall Caps: ${smallCaps || 0}\nPlastic: ${plastic || 0} KG`);
+    
+    document.getElementById('material-date').value = '';
+    document.getElementById('b-preform').value = '';
+    document.getElementById('s-preform').value = '';
+    document.getElementById('big-caps').value = '';
+    document.getElementById('small-caps').value = '';
+    document.getElementById('plastic-used').value = '';
+}
+
+function handleSubmitInventoryPurchase() {
+    const date = document.getElementById('purchase-date').value;
+    const category = document.getElementById('purchase-category').value;
+    const qty = document.getElementById('purchase-qty').value;
+    
+    if (!date || !category || !qty) {
+        alert('Please enter all purchase details');
+        return;
+    }
+    
+    alert(`Inventory purchase recorded:\nDate: ${date}\nCategory: ${category}\nQuantity: ${qty}`);
+    
+    document.getElementById('purchase-date').value = '';
+    document.getElementById('purchase-category').value = 'B. Preform';
+    document.getElementById('purchase-qty').value = '';
+}
+
+function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        window.location.href = 'login.html';
+    }
+}
+</script>
+</body></html>

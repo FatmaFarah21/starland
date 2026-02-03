@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><title>Settings - Starland Water Company</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Configuration -->
+    <script src="../js/supabase-config.js"></script>
+    <!-- Supabase Database Helper -->
+    <script src="../js/supabase-db.js"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "sidebar-bg": "#0f172a",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 h-screen overflow-hidden">
+    <div class="flex h-full">
+        <aside class="w-64 flex-shrink-0 bg-sidebar-bg text-slate-300 flex flex-col border-r border-slate-800 hidden md:flex">
+            <div class="p-6 border-b border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold">
+                        <span class="material-symbols-outlined text-xl">water_drop</span>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg text-white">Starland Water</h1>
+                        <p class="text-xs text-slate-500">Management</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="flex-1 px-3 py-4 space-y-1 sidebar-scroll overflow-y-auto">
+                <p class="px-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Main Menu</p>
+                <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-xl">dashboard</span>
+                    <span class="text-sm font-semibold">Dashboard</span>
+                </a>
+                <a href="production.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-xl">factory</span>
+                    <span class="text-sm font-semibold">Production</span>
+                </a>
+                <a href="sales.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-xl">shopping_cart</span>
+                    <span class="text-sm font-semibold">Sales</span>
+                </a>
+                <a href="expenses.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-xl">account_balance_wallet</span>
+                    <span class="text-sm font-semibold">Expenses</span>
+                </a>
+                <a href="materials.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-xl">inventory_2</span>
+                    <span class="text-sm font-semibold">Materials</span>
+                </a>
+                <a href="inventory.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-xl">warehouse</span>
+                    <span class="text-sm font-semibold">Inventory</span>
+                </a>
+                <a href="reports.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined text-xl">analytics</span>
+                    <span class="text-sm font-semibold">Reports</span>
+                </a>
+                <div class="border-t border-slate-700 my-3 pt-3">
+                    <a href="settings.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/15 text-primary hover:bg-primary/20 transition-colors">
+                        <span class="material-symbols-outlined text-xl">settings</span>
+                        <span class="text-sm font-semibold">Settings</span>
+                    </a>
+                </div>
+            </nav>
+            <div class="p-4 border-t border-slate-800">
+                <div class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-primary">person</span>
+                    </div>
+                    <div class="overflow-hidden flex-1">
+                        <p class="text-sm font-semibold truncate" id="user-name">Admin User</p>
+                        <p class="text-xs text-slate-500 truncate">Management</p>
+                    </div>
+                </div>
+                <button onclick="handleLogout()" class="w-full mt-2 h-9 text-sm font-semibold text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
+                    Logout
+                </button>
+            </div>
+        </aside>
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <header class="sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 h-16 px-6 flex items-center justify-between">
+                <h1 class="text-xl font-bold text-slate-900 dark:text-white">Settings & Configuration</h1>
+                <button onclick="toggleDarkMode()" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined text-slate-600 dark:text-slate-400" id="theme-icon">dark_mode</span>
+                </button>
+            </header>
+            <main class="flex-1 overflow-y-auto p-6 space-y-6 max-w-3xl">
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">person</span>
+                        Profile Settings
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Full Name</label>
+                            <input type="text" value="Admin User" class="h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"/>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Email</label>
+                            <input type="email" value="admin@starland.com" class="h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"/>
+                        </div>
+                        <button onclick="handleSaveProfile()" class="w-full h-10 bg-primary hover:bg-blue-700 active:scale-95 text-white font-bold rounded-lg transition-all">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">security</span>
+                        Security
+                    </h2>
+                    <div class="space-y-3 border-t border-slate-200 dark:border-slate-800 pt-4">
+                        <button onclick="handleChangePassword()" class="text-sm text-primary font-bold hover:underline">Change Password</button>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">display_settings</span>
+                        Display Preferences
+                    </h2>
+                    <div class="space-y-3">
+                        <button onclick="handleToggleDark()" class="w-full text-left px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                            <span class="font-semibold text-slate-900 dark:text-white">Dark Mode</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm">
+                    <h2 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-red-500">logout</span>
+                        Session
+                    </h2>
+                    <button onclick="handleLogout()" class="w-full h-10 border-2 border-red-500 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold rounded-lg transition-colors">
+                        Sign Out
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script>
+        window.addEventListener('load', () => {
+            const userName = localStorage.getItem('user_name') || 'Admin User';
+            document.getElementById('user-name').textContent = userName;
+        });
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+            updateThemeIcon();
+        }
+        function updateThemeIcon() {
+            const icon = document.getElementById('theme-icon');
+            if (document.documentElement.classList.contains('dark')) {
+                icon.textContent = 'light_mode';
+            } else {
+                icon.textContent = 'dark_mode';
+            }
+        }
+        function handleSaveProfile() {
+            alert('Profile saved successfully!');
+        }
+        function handleChangePassword() {
+            alert('Password change initiated...');
+        }
+        function handleToggleDark() {
+            toggleDarkMode();
+        }
+        function handleLogout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            }
+        }
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+        updateThemeIcon();
+    </script>
+</body>
+</html>

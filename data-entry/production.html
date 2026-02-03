@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Production Records - Water Manufacturing</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Supabase JS Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Supabase Configuration -->
+<script src="../../js/supabase-config.js"></script>
+<!-- Supabase Database Helper -->
+<script src="../../js/supabase-db.js"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "sidebar-bg": "#0f172a",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        body {
+            min-height: max(884px, 100dvh);
+        }.custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #1e293b;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 min-h-screen flex overflow-hidden">
+<aside class="w-64 border-r border-slate-800 flex flex-col py-6 bg-sidebar-bg text-white z-50 shrink-0">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary/20 shrink-0">
+<span class="material-icons-round">water_drop</span>
+</div>
+<span class="font-bold text-lg tracking-tight text-white">Starland Water</span>
+</div>
+<nav class="flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar">
+<a href="dashboard.html" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors group">
+<span class="material-icons-round text-[22px]">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<button class="w-full flex items-center gap-3 px-3 py-2.5 text-white bg-primary rounded-lg transition-colors">
+<span class="material-icons-round text-[22px]">factory</span>
+<span class="text-sm font-semibold">Production</span>
+</button>
+<a href="sales.html" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors group">
+<span class="material-icons-round text-[22px]">point_of_sale</span>
+<span class="text-sm font-medium">Sales</span>
+</a>
+<a href="expenses.html" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors group">
+<span class="material-icons-round text-[22px]">payments</span>
+<span class="text-sm font-medium">Expenses</span>
+</a>
+<a href="materials.html" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors group">
+<span class="material-icons-round text-[22px]">inventory_2</span>
+<span class="text-sm font-medium">Materials</span>
+</a>
+</nav>
+<div class="mt-auto px-3 pt-6 border-t border-slate-100 dark:border-slate-800 space-y-1">
+
+</aside>
+<main class="flex-1 overflow-y-auto relative h-screen custom-scrollbar">
+<header class="sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-6 py-4 z-40 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+<h1 class="text-xl font-bold tracking-tight">Production Records</h1>
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-800 rounded-full border border-slate-200 dark:border-slate-700 shadow-sm text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+<span class="material-icons-round text-xl">notifications</span>
+</button>
+</div>
+</header>
+<div class="p-6 space-y-6 max-w-4xl mx-auto">
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Today's Total</p>
+<p class="text-3xl font-bold mt-2">4,280 <span class="text-sm font-normal text-slate-400">units</span></p>
+</div>
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Active Batch</p>
+<p class="text-3xl font-bold mt-2 text-primary">#982</p>
+</div>
+</div>
+<section class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h2 class="font-bold text-xl">Production Logs</h2>
+<span class="text-[10px] font-bold text-slate-500 bg-slate-200 dark:bg-slate-800 px-2.5 py-1 rounded-full uppercase tracking-tight">32 Records Found</span>
+</div>
+<div class="flex gap-3">
+<div class="relative flex-1">
+<span class="material-icons-round absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+<input class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm pl-11 pr-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-primary shadow-sm" placeholder="Search logs by ID, category or status..." type="text"/>
+</div>
+<button class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-4 rounded-lg text-slate-600 dark:text-slate-400 shadow-sm flex items-center justify-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+<span class="material-icons-round text-xl">filter_list</span>
+<span class="text-sm font-semibold hidden sm:inline">Filters</span>
+</button>
+</div>
+</section>
+<section class="pb-12">
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 font-semibold">
+<th class="px-6 py-4 font-bold text-xs uppercase tracking-wider">Production Category</th>
+<th class="px-6 py-4 font-bold text-xs uppercase tracking-wider">Date & Time</th>
+<th class="px-6 py-4 font-bold text-xs uppercase tracking-wider text-right">Quantity</th>
+<th class="px-6 py-4 font-bold text-xs uppercase tracking-wider text-center">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-5">
+<span class="font-bold text-slate-900 dark:text-white">B. Production</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-[11px] text-slate-400 font-medium uppercase">Oct 27, 2023 • 10:45 AM</span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex flex-col items-end">
+<span class="font-bold text-slate-900 dark:text-white text-base">1,200</span>
+<span class="text-[9px] px-2 py-0.5 mt-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-black uppercase">COMPLETED</span>
+</div>
+</td>
+<td class="px-6 py-5 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="editProduction(this)" title="Edit">
+<span class="material-icons-round text-lg text-slate-400 hover:text-primary">edit</span>
+</button>
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="deleteProduction(this)" title="Delete">
+<span class="material-icons-round text-lg text-slate-400 hover:text-red-500">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-5">
+<span class="font-bold text-slate-900 dark:text-white">B. Loading</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-[11px] text-slate-400 font:medium uppercase">Oct 27, 2023 • 09:30 AM</span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex flex-col items-end">
+<span class="font-bold text-slate-900 dark:text-white text-base">850</span>
+<span class="text-[9px] px-2 py-0.5 mt-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-black uppercase">IN TRANSIT</span>
+</div>
+</td>
+<td class="px-6 py-5 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="editProduction(this)" title="Edit">
+<span class="material-icons-round text-lg text-slate-400 hover:text-primary">edit</span>
+</button>
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="deleteProduction(this)" title="Delete">
+<span class="material-icons-round text-lg text-slate-400 hover:text-red-500">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-5">
+<span class="font-bold text-slate-900 dark:text-white">B. Store</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-[11px] text-slate-400 font-medium uppercase">Oct 26, 2023 • 04:15 PM</span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex flex-col items-end">
+<span class="font-bold text-slate-900 dark:text-white text-base">2,230</span>
+<span class="text-[9px] px-2 py-0.5 mt-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 font-black uppercase">STORED</span>
+</div>
+</td>
+<td class="px-6 py-5 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="editProduction(this)" title="Edit">
+<span class="material-icons-round text-lg text-slate-400 hover:text-primary">edit</span>
+</button>
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="deleteProduction(this)" title="Delete">
+<span class="material-icons-round text-lg text-slate-400 hover:text-red-500">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-5">
+<span class="font-bold text-slate-900 dark:text-white">B. Production</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-[11px] text-slate-400 font-medium uppercase">Oct 26, 2023 • 11:00 AM</span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex flex-col items-end">
+<span class="font-bold text-slate-900 dark:text-white text-base">1,500</span>
+<span class="text-[9px] px-2 py-0.5 mt-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-black uppercase">COMPLETED</span>
+</div>
+</td>
+<td class="px-6 py-5 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="editProduction(this)" title="Edit">
+<span class="material-icons-round text-lg text-slate-400 hover:text-primary">edit</span>
+</button>
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="deleteProduction(this)" title="Delete">
+<span class="material-icons-round text-lg text-slate-400 hover:text-red-500">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-5">
+<span class="font-bold text-slate-900 dark:text-white">B. Loading</span>
+</td>
+<td class="px-6 py-5">
+<span class="text-[11px] text-slate-400 font-medium uppercase">Oct 26, 2023 • 08:00 AM</span>
+</td>
+<td class="px-6 py-5 text-right">
+<div class="flex flex-col items-end">
+<span class="font-bold text-slate-900 dark:text-white text-base">400</span>
+<span class="text-[9px] px-2 py-0.5 mt-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 font-black uppercase">DELIVERED</span>
+</div>
+</td>
+<td class="px-6 py-5 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="editProduction(this)" title="Edit">
+<span class="material-icons-round text-lg text-slate-400 hover:text-primary">edit</span>
+</button>
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="deleteProduction(this)" title="Delete">
+<span class="material-icons-round text-lg text-slate-400 hover:text-red-500">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<button class="w-full py-4 text-sm text-primary font-bold hover:bg-primary/5 transition-colors border-t border-slate-100 dark:border-slate-800">
+View Complete Production History
+</button>
+</div>
+</section>
+<section class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+<div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+<h2 class="font-bold flex items-center gap-2">
+<span class="material-icons-round text-primary text-xl">add_box</span>
+New Entry
+</h2>
+</div>
+<div class="p-5 space-y-5">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+<div>
+<label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Date</label>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary px-4 py-2.5" type="date" value="2023-10-27" id="prod-date"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Category</label>
+<select class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary px-4 py-2.5 appearance-none" id="prod-category">
+<option>B. Production</option>
+<option>B. Loading</option>
+<option>B. Store</option>
+<option>S. Production</option>
+<option>S. Loading</option>
+<option>S. Store</option>
+</select>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wide">Quantity</label>
+<div class="relative">
+<input class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary pr-14 pl-4 py-2.5" placeholder="0.00" type="number" id="prod-qty"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400">UNITS</span>
+</div>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/20" onclick="handleSubmitProduction()">
+<span class="material-icons-round text-xl">check_circle</span>
+Submit Production Record
+</button>
+</div>
+</section>
+</div>
+<button class="fixed bottom-6 right-6 w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center shadow-2xl shadow-primary/40 md:hidden border-4 border-white dark:border-background-dark active:scale-95 transition-transform z-50" onclick="handleMobileAdd()">
+<span class="material-icons-round text-3xl">add</span>
+</button>
+</main>
+
+<script>
+function handleSubmitProduction() {
+    const date = document.getElementById('prod-date').value;
+    const category = document.getElementById('prod-category').value;
+    const qty = document.getElementById('prod-qty').value;
+    
+    if (!qty || qty === '0') {
+        alert('Please enter a quantity');
+        return;
+    }
+    
+    alert(`Production record submitted:\nDate: ${date}\nCategory: ${category}\nQuantity: ${qty} units`);
+    document.getElementById('prod-qty').value = '';
+}
+
+function editProduction(button) {
+    const row = button.closest('tr');
+    const category = row.querySelector('td:first-child').textContent.trim();
+    const qty = row.querySelector('td:nth-child(3)').textContent.split('\n')[0].trim();
+    alert(`Edit production record:\nCategory: ${category}\nQuantity: ${qty}\n\nEdit functionality would open a modal`);
+}
+
+function deleteProduction(button) {
+    if (confirm('Are you sure you want to delete this production record?')) {
+        const row = button.closest('tr');
+        row.remove();
+        alert('Production record deleted successfully');
+    }
+}
+
+function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        window.location.href = 'login.html';
+    }
+}
+</script>
+</body></html>

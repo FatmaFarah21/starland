@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Data Entry Dashboard</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Supabase JS Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Supabase Configuration -->
+<script src="../../js/supabase-config.js"></script>
+<!-- Supabase Database Helper -->
+<script src="../../js/supabase-db.js"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "sidebar-bg": "#0f172a",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+        html {
+            height: 100%;
+            overflow-y: auto;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-screen w-full overflow-hidden">
+<!-- Navigation Drawer (Collapsible Sidebar - Hidden/Overlay on Phone) -->
+<div class="absolute left-0 top-0 z-50 h-full w-72 -translate-x-full transition-transform duration-300 lg:relative lg:translate-x-0 bg-sidebar-bg text-white shadow-xl">
+<div class="flex h-full flex-col gap-4 p-4">
+<div class="flex items-center gap-3 px-4 py-6 border-b border-white/10">
+<div class="size-10 rounded-lg bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white">water_drop</span>
+</div>
+<div>
+<p class="text-white text-lg font-bold leading-tight">Starland Water</p>
+<p class="text-white/60 text-xs">Data Entry</p>
+</div>
+</div>
+<ul class="flex flex-col gap-1 mt-4">
+<a href="dashboard.html" class="flex h-12 items-center gap-4 rounded-lg px-4 bg-primary text-white">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-base font-semibold truncate">Dashboard</p>
+</a>
+<a href="production.html" class="flex h-12 items-center gap-4 rounded-lg px-4 text-white/70 hover:bg-white/5">
+<span class="material-symbols-outlined">factory</span>
+<p class="text-base font-medium truncate">Production</p>
+</a>
+<a href="sales.html" class="flex h-12 items-center gap-4 rounded-lg px-4 text-white/70 hover:bg-white/5">
+<span class="material-symbols-outlined">point_of_sale</span>
+<p class="text-base font-medium truncate">Sales</p>
+</a>
+<a href="expenses.html" class="flex h-12 items-center gap-4 rounded-lg px-4 text-white/70 hover:bg-white/5">
+<span class="material-symbols-outlined">receipt_long</span>
+<p class="text-base font-medium truncate">Expenses</p>
+</a>
+<a href="materials.html" class="flex h-12 items-center gap-4 rounded-lg px-4 text-white/70 hover:bg-white/5">
+<span class="material-symbols-outlined">inventory_2</span>
+<p class="text-base font-medium truncate">Materials</p>
+</a>
+</ul>
+<div class="mt-auto p-4 bg-white/5 rounded-xl border border-white/10">
+<p class="text-white/50 text-xs uppercase tracking-wider font-bold mb-2">Access Level</p>
+<p class="text-white text-sm font-medium">Data Entry Operator</p>
+</div>
+</div>
+</div>
+<!-- Main Content Area -->
+<div class="flex flex-1 flex-col overflow-y-auto">
+<!-- TopAppBar -->
+<div class="sticky top-0 z-30 flex items-center bg-white dark:bg-background-dark border-b border-gray-200 dark:border-gray-800 p-4 justify-between">
+<div class="flex items-center gap-3">
+<div class="text-gray-700 dark:text-gray-200 flex size-10 items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer lg:hidden">
+<span class="material-symbols-outlined">menu</span>
+</div>
+<div>
+<h2 class="text-gray-900 dark:text-white text-lg font-bold leading-tight">Alex Rivera</h2>
+<p class="text-gray-500 dark:text-gray-400 text-xs">Data Entry</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-primary text-sm font-bold px-4 py-2 hover:bg-primary/5 rounded-lg transition-colors" onclick="handleLogout()">Logout</button>
+</div>
+</div>
+<!-- Dashboard Content -->
+<main class="flex-1 pb-20">
+<!-- Stats Cards -->
+<div class="flex flex-col gap-4 p-4 sm:flex-row">
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-5 bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700">
+<div class="flex items-center justify-between">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Sales Entered (Today)</p>
+<span class="material-symbols-outlined text-green-500 text-sm">trending_up</span>
+</div>
+<p class="text-gray-900 dark:text-white tracking-tight text-2xl font-bold leading-tight">$1,450.00</p>
+<div class="flex items-center gap-1">
+<span class="text-green-600 text-xs font-bold">+12% vs yesterday</span>
+</div>
+</div>
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-5 bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700">
+<div class="flex items-center justify-between">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Expenses (Today)</p>
+<span class="material-symbols-outlined text-red-500 text-sm">receipt</span>
+</div>
+<p class="text-gray-900 dark:text-white tracking-tight text-2xl font-bold leading-tight">$215.40</p>
+<div class="flex items-center gap-1 text-gray-400">
+<span class="text-xs font-medium">8 entries made</span>
+</div>
+</div>
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-5 bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700">
+<div class="flex items-center justify-between">
+<p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total My Records</p>
+<span class="material-symbols-outlined text-primary text-sm">history</span>
+</div>
+<p class="text-gray-900 dark:text-white tracking-tight text-2xl font-bold leading-tight">24</p>
+<div class="flex items-center gap-1">
+<span class="text-primary text-xs font-bold">Daily Goal: 30</span>
+</div>
+</div>
+</div>
+<!-- SectionHeader -->
+<div class="flex items-center justify-between px-4 pb-2 pt-4">
+<h3 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-tight">Recent Entries</h3>
+<button class="text-primary text-sm font-semibold flex items-center gap-1">
+                        View All
+                        <span class="material-symbols-outlined text-base">chevron_right</span>
+</button>
+</div>
+<!-- Recent Entries List -->
+<div class="flex flex-col px-4 gap-2">
+<!-- List Item 1 -->
+<div class="flex items-center gap-4 bg-white dark:bg-gray-800 rounded-xl px-4 min-h-[72px] py-3 shadow-sm border border-gray-100 dark:border-gray-700 justify-between">
+<div class="flex items-center gap-4">
+<div class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-12">
+<span class="material-symbols-outlined">water_full</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-gray-900 dark:text-white text-base font-bold leading-tight line-clamp-1">Water Sales - 20L</p>
+<div class="flex items-center gap-2">
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium">10:30 AM</p>
+<span class="size-1 bg-gray-300 rounded-full"></span>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium">50 Units</p>
+</div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-gray-900 dark:text-white text-base font-bold leading-tight">$450.00</p>
+<span class="text-[10px] uppercase tracking-wider font-bold text-green-600 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded">Synced</span>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="flex items-center gap-4 bg-white dark:bg-gray-800 rounded-xl px-4 min-h-[72px] py-3 shadow-sm border border-gray-100 dark:border-gray-700 justify-between">
+<div class="flex items-center gap-4">
+<div class="text-orange-500 flex items-center justify-center rounded-lg bg-orange-100 shrink-0 size-12">
+<span class="material-symbols-outlined">local_shipping</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-gray-900 dark:text-white text-base font-bold leading-tight line-clamp-1">Fuel Expense</p>
+<div class="flex items-center gap-2">
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium">09:15 AM</p>
+<span class="size-1 bg-gray-300 rounded-full"></span>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium">Vehicle #04</p>
+</div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-gray-900 dark:text-white text-base font-bold leading-tight">$120.00</p>
+<span class="text-[10px] uppercase tracking-wider font-bold text-green-600 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded">Synced</span>
+</div>
+</div>
+<!-- List Item 3 -->
+<div class="flex items-center gap-4 bg-white dark:bg-gray-800 rounded-xl px-4 min-h-[72px] py-3 shadow-sm border border-gray-100 dark:border-gray-700 justify-between">
+<div class="flex items-center gap-4">
+<div class="text-blue-500 flex items-center justify-center rounded-lg bg-blue-50 shrink-0 size-12">
+<span class="material-symbols-outlined">inventory</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-gray-900 dark:text-white text-base font-bold leading-tight line-clamp-1">Plastic Caps Restock</p>
+<div class="flex items-center gap-2">
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium">08:45 AM</p>
+<span class="size-1 bg-gray-300 rounded-full"></span>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium">5,000 Units</p>
+</div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-gray-900 dark:text-white text-base font-bold leading-tight">$85.40</p>
+<span class="text-[10px] uppercase tracking-wider font-bold text-gray-500 bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded">Pending</span>
+</div>
+</div>
+<!-- List Item 4 -->
+<div class="flex items-center gap-4 bg-white dark:bg-gray-800 rounded-xl px-4 min-h-[72px] py-3 shadow-sm border border-gray-100 dark:border-gray-700 justify-between">
+<div class="flex items-center gap-4">
+<div class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-12">
+<span class="material-symbols-outlined">water_full</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-gray-900 dark:text-white text-base font-bold leading-tight line-clamp-1">Water Sales - 500ml Case</p>
+<div class="flex items-center gap-2">
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium">08:10 AM</p>
+<span class="size-1 bg-gray-300 rounded-full"></span>
+<p class="text-gray-500 dark:text-gray-400 text-xs font-medium">100 Cases</p>
+</div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-gray-900 dark:text-white text-base font-bold leading-tight">$1,000.00</p>
+<span class="text-[10px] uppercase tracking-wider font-bold text-green-600 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded">Synced</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Quick Actions (Mobile Optimized) -->
+<div class="fixed bottom-6 right-6 flex flex-col gap-3 lg:hidden">
+<button class="size-14 rounded-full bg-primary text-white shadow-2xl flex items-center justify-center hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+</div>
+</div>
+</div>
+
+<script>
+function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        window.location.href = 'login.html';
+    }
+}
+</script>
+</body></html>

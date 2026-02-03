@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Starland Water Company - Login</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Configuration -->
+    <script src="../js/supabase-config.js"></script>
+    <!-- Supabase Database Helper -->
+    <script src="../js/supabase-db.js"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "sidebar-bg": "#0f172a",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-[400px] bg-white dark:bg-slate-900 shadow-xl rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800">
+        <div class="flex items-center justify-center p-8 pb-4">
+            <div class="flex flex-col items-center gap-3">
+                <div class="w-14 h-14 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white">
+                    <span class="material-symbols-outlined text-4xl">water_drop</span>
+                </div>
+                <div class="text-center">
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Starland Water</h1>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Management System</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="px-8 py-6 space-y-4">
+            <div class="space-y-2">
+                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Email Address</label>
+                <input id="email-input" type="email" placeholder="admin@starland.com" class="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-sm transition"/>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300">Password</label>
+                <input id="password-input" type="password" placeholder="••••••••" class="w-full h-10 px-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-sm transition"/>
+            </div>
+
+            <div class="flex items-center justify-between pt-2">
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" class="w-4 h-4 border border-slate-300 dark:border-slate-600 rounded cursor-pointer accent-primary"/>
+                    <span class="text-sm text-slate-600 dark:text-slate-400">Remember me</span>
+                </label>
+                <a href="#" onclick="handleForgotPassword(event)" class="text-sm text-primary hover:underline font-medium">Forgot password?</a>
+            </div>
+
+            <button id="login-btn" type="button" onclick="handleLogin(event)" class="w-full h-11 bg-primary hover:bg-blue-700 active:scale-95 text-white font-bold rounded-lg transition-all duration-200 mt-4">
+                Sign In
+            </button>
+
+            <div class="relative py-3">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-slate-300 dark:border-slate-700"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400">Don't have an account?</span>
+                </div>
+            </div>
+
+            <a href="register.html" class="w-full h-11 border-2 border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 text-slate-700 dark:text-slate-300 font-bold rounded-lg transition-all duration-200 flex items-center justify-center">
+                Create Account
+            </a>
+        </div>
+
+        <div class="px-8 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500 dark:text-slate-400">
+            Secure login. Your data is protected.
+        </div>
+    </div>
+
+    <script>
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email-input').value;
+            const password = document.getElementById('password-input').value;
+            
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+            
+            if (!email.includes('@')) {
+                alert('Please enter a valid email');
+                return;
+            }
+            
+            // Simulate successful login
+            localStorage.setItem('user_email', email);
+            localStorage.setItem('user_role', 'management');
+            alert(`Welcome to Starland Water Company!\nLogged in as: ${email}`);
+            window.location.href = 'dashboard.html';
+        }
+
+        function handleForgotPassword(event) {
+            event.preventDefault();
+            const email = document.getElementById('email-input').value;
+            if (!email) {
+                alert('Please enter your email address');
+                return;
+            }
+            alert(`Password reset link sent to: ${email}`);
+        }
+
+        // Demo credentials hint
+        console.log('Demo Credentials:');
+        console.log('Email: admin@starland.com');
+        console.log('Password: any password');
+    </script>
+</body>
+</html>

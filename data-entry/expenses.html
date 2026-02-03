@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Expenses Tracking - Starland Water</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Supabase JS Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Supabase Configuration -->
+<script src="../../js/supabase-config.js"></script>
+<!-- Supabase Database Helper -->
+<script src="../../js/supabase-db.js"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#136dec",
+                        "sidebar-bg": "#0f172a",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer base {
+            .material-symbols-outlined {
+                font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            }
+            body {
+                font-family: 'Inter', sans-serif;
+            }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .sidebar-item-active {
+            background-color: #1e293b;
+            border-left: 4px solid #136dec;
+            color: #ffffff;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="flex min-h-screen overflow-hidden">
+<aside class="w-64 bg-sidebar-bg flex-shrink-0 border-r border-slate-800 flex flex-col">
+<div class="p-6">
+<div class="flex items-center gap-3 text-white">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white">water_drop</span>
+</div>
+<span class="font-bold text-lg tracking-tight">Starland Water</span>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors group" href="dashboard.html">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors group" href="production.html">
+<span class="material-symbols-outlined text-xl">factory</span>
+<span class="text-sm font-medium">Production</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors group" href="sales.html">
+<span class="material-symbols-outlined text-xl">trending_up</span>
+<span class="text-sm font-medium">Sales</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 sidebar-item-active text-white rounded-lg group" href="expenses.html">
+<span class="material-symbols-outlined text-xl">account_balance_wallet</span>
+<span class="text-sm font-bold">Expenses</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors group" href="materials.html">
+<span class="material-symbols-outlined text-xl">inventory_2</span>
+<span class="text-sm font-medium">Materials</span>
+</a>
+</nav>
+</aside>
+<main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+<header class="bg-white dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 h-16 sticky top-0 z-30 flex items-center justify-between px-8">
+<div class="flex items-center gap-4">
+<h1 class="text-xl font-bold text-slate-800 dark:text-white">Expenses Tracking</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-lg">calendar_month</span>
+                        Oct 24, 2023
+                    </button>
+<div class="size-8 rounded-full bg-slate-200 overflow-hidden">
+<img alt="User" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAh2PzfSzYi4-3X5n-piL51eMgZcfkjHUSBN_iOmAI0x6hvZmYBkdc9JwlrOxMBgMoN03m0K5MDGQtZzYN03V-RXqlpbrHCgP9Q5IIWO7kBOZ-SLdPjJje0vFNFYODXTcn-D5ZVlGasOGEGtH_7t84fpfFsKxFoaS7Pw7JuqttLAedt65mwUredFOl8YjcT0s5IWmcmQ4qA61kwFKXYZVf4Wv_qH8ciaGymLVTNMLLdEOZwDOhxhkztvlFZeFjjPINzxHOXCHbhDxM3"/>
+</div>
+</div>
+</header>
+<div class="p-8 max-w-7xl mx-auto w-full space-y-8">
+<section class="space-y-4">
+<div class="flex flex-col">
+<h2 class="text-lg font-bold text-slate-900 dark:text-white leading-tight">Record New Expense</h2>
+<p class="text-sm text-slate-500 dark:text-slate-400">Log company expenditures</p>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 space-y-5">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div class="flex flex-col gap-1.5">
+<label class="text-slate-700 dark:text-slate-300 text-xs font-bold uppercase tracking-wider">Category</label>
+<input class="form-input block w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary text-sm px-3 py-2" type="text" placeholder="e.g., Utilities, Raw Materials, Maintenance..." id="expense-category"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-slate-700 dark:text-slate-300 text-xs font-bold uppercase tracking-wider">Amount (USD)</label>
+<input class="form-input block w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary text-sm px-3 py-2" placeholder="0.00" step="0.01" type="number" id="expense-amount"/>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-slate-700 dark:text-slate-300 text-xs font-bold uppercase tracking-wider">Description</label>
+<textarea class="form-textarea block w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary text-sm px-3 py-2" placeholder="Enter expense details..." rows="2" id="expense-description"></textarea>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-slate-700 dark:text-slate-300 text-xs font-bold uppercase tracking-wider">Date</label>
+<input class="form-input block w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:ring-2 focus:ring-primary focus:border-primary text-sm px-3 py-2" type="date" value="2023-10-24" id="expense-date"/>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20" onclick="handleAddExpense()">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+Save Expense
+</button>
+</div>
+</section>
+<section class="space-y-4">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="text-lg font-bold text-slate-900 dark:text-white leading-tight">Recent Expenses</h2>
+<p class="text-sm text-slate-500 dark:text-slate-400">Detailed log of all financial outflows</p>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date</th>
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Description</th>
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Category</th>
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Amount</th>
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
+<th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-center">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">Oct 24, 2023</td>
+<td class="p-4 text-sm font-semibold text-slate-900 dark:text-white">Diesel for Delivery Trucks</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">
+<span class="px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-600 text-[10px] font-bold uppercase">Logistics</span>
+</td>
+<td class="p-4 text-sm font-bold text-slate-900 dark:text-white">$450.00</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 text-xs font-bold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Approved
+</span>
+</td>
+<td class="p-4 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="editExpense(this)" title="Edit">
+<span class="material-symbols-outlined text-lg text-slate-400 hover:text-primary">edit</span>
+</button>
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="deleteExpense(this)" title="Delete">
+<span class="material-symbols-outlined text-lg text-slate-400 hover:text-red-500">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">Oct 23, 2023</td>
+<td class="p-4 text-sm font-semibold text-slate-900 dark:text-white">Bottle Caps (50,000 units)</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">
+<span class="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-600 text-[10px] font-bold uppercase">Raw Materials</span>
+</td>
+<td class="p-4 text-sm font-bold text-slate-900 dark:text-white">$1,200.00</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 text-xs font-bold">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Pending
+</span>
+</td>
+<td class="p-4 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="editExpense(this)" title="Edit">
+<span class="material-symbols-outlined text-lg text-slate-400 hover:text-primary">edit</span>
+</button>
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="deleteExpense(this)" title="Delete">
+<span class="material-symbols-outlined text-lg text-slate-400 hover:text-red-500">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">Oct 23, 2023</td>
+<td class="p-4 text-sm font-semibold text-slate-900 dark:text-white">Warehouse Electricity Bill</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">
+<span class="px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-900/30 text-purple-600 text-[10px] font-bold uppercase">Utilities</span>
+</td>
+<td class="p-4 text-sm font-bold text-slate-900 dark:text-white">$890.50</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 text-xs font-bold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Approved
+</span>
+</td>
+<td class="p-4 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="editExpense(this)" title="Edit">
+<span class="material-symbols-outlined text-lg text-slate-400 hover:text-primary">edit</span>
+</button>
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="deleteExpense(this)" title="Delete">
+<span class="material-symbols-outlined text-lg text-slate-400 hover:text-red-500">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">Oct 22, 2023</td>
+<td class="p-4 text-sm font-semibold text-slate-900 dark:text-white">Production Line Maintenance</td>
+<td class="p-4 text-sm text-slate-600 dark:text-slate-300">
+<span class="px-2 py-0.5 rounded bg-red-100 dark:bg-red-900/30 text-red-600 text-[10px] font-bold uppercase">Maintenance</span>
+</td>
+<td class="p-4 text-sm font-bold text-slate-900 dark:text-white">$3,400.00</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 text-xs font-bold">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Pending Review
+</span>
+</td>
+<td class="p-4 text-center">
+<div class="flex items-center justify-center gap-1">
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="editExpense(this)" title="Edit">
+<span class="material-symbols-outlined text-lg text-slate-400 hover:text-primary">edit</span>
+</button>
+<button class="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" onclick="deleteExpense(this)" title="Delete">
+<span class="material-symbols-outlined text-lg text-slate-400 hover:text-red-500">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+
+<script>
+function handleAddExpense() {
+    const category = document.getElementById('expense-category').value;
+    const amount = document.getElementById('expense-amount').value;
+    const description = document.getElementById('expense-description').value;
+    const date = document.getElementById('expense-date').value;
+    
+    if (!category || !amount || !description || !date) {
+        alert('Please fill in all required fields');
+        return;
+    }
+    
+    if (amount <= 0) {
+        alert('Amount must be greater than 0');
+        return;
+    }
+    
+    alert(`Expense recorded:\nCategory: ${category}\nAmount: $${amount}\nDescription: ${description}\nDate: ${date}`);
+    document.getElementById('expense-category').value = '';
+    document.getElementById('expense-amount').value = '';
+    document.getElementById('expense-description').value = '';
+    document.getElementById('expense-date').value = '2023-10-24';
+}
+
+function editExpense(button) {
+    const row = button.closest('tr');
+    const date = row.querySelector('td:first-child').textContent.trim();
+    const description = row.querySelector('td:nth-child(2)').textContent.trim();
+    const category = row.querySelector('td:nth-child(3)').textContent.trim();
+    const amount = row.querySelector('td:nth-child(4)').textContent.trim();
+    alert(`Edit expense:\nDate: ${date}\nDescription: ${description}\nCategory: ${category}\nAmount: ${amount}\n\nEdit functionality would open a modal`);
+}
+
+function deleteExpense(button) {
+    if (confirm('Are you sure you want to delete this expense?')) {
+        const row = button.closest('tr');
+        row.remove();
+        alert('Expense deleted successfully');
+    }
+}
+
+function handleLogout() {
+    if (confirm('Are you sure you want to logout?')) {
+        window.location.href = 'login.html';
+    }
+}
+</script>
+</body></html>
